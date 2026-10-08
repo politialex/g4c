@@ -6,4 +6,4 @@ Prototipo HTML mobile di un gioco di carte 4×4 a catture. Apri `index.html` (o 
 - Draft in 5 round, regole opzionali Same, Plus, Combo, Elementi
 - Prototipo per playtest, non il prodotto finale
 
-Icone: [Font Awesome Free](https://fontawesome.com/license/free) (CC BY 4.0).
+Icone: [Font Awesome Free](https://fontawesome.com/license/free) (CC BY 4.0). Font: Orbitron e Rajdhani (SIL OFL 1.1), incorporati nel file.
