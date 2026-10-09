@@ -32,7 +32,7 @@ body{min-height:100dvh;background:
  linear-gradient(90deg,rgba(63,230,255,.035) 1px,transparent 1px) 0 0/36px 36px,
  radial-gradient(ellipse at 0 0,rgba(20,80,120,.35),transparent 55%),var(--bg);touch-action:manipulation}
 h1{font:800 18px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;margin:0;color:#fff}
-h2{font:700 12px/1 var(--disp);letter-spacing:.24em;text-transform:uppercase;color:var(--cy);margin:20px 0 10px;display:flex;align-items:center;gap:10px}
+h2{font:700 12px/1.35 var(--disp);letter-spacing:.24em;text-transform:uppercase;color:var(--cy);margin:20px 0 10px;display:flex;align-items:center;gap:10px}
 h2::before{content:"";width:8px;height:8px;background:var(--am);clip-path:polygon(0 0,100% 50%,0 100%)}
 h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 h2 small{font:500 12px var(--serif);letter-spacing:.04em;text-transform:none;color:var(--parch2)}
@@ -1068,7 +1068,7 @@ function offerDetail(c) {
 function renderDraftScreen() {
   const D = DRAFT, all = D.picks.concat(D.recv);
   $('#d-round').textContent = D.done ? 'Mazzo completo' : `Round ${Math.min(D.round + 1, DRAFT_ROUNDS)}/${DRAFT_ROUNDS} · la CPU sceglie in contemporanea dalla sua coppia`;
-  $('#d-h').textContent = D.done ? '5 scelte + 5 scarti della CPU' : 'Scegli 1 carta: l\'altra va alla CPU';
+  $('#d-h').textContent = D.done ? '5 scelte + 5 scarti della CPU' : 'Scegli 1 carta · l\'altra va alla CPU';
   const nSlots = D.done ? DECK_SIZE : DRAFT_ROUNDS;
   $('#d-slots').innerHTML = Array.from({ length: nSlots }, (_, i) => { const c = D.done ? all[i] : D.picks[i]; return `<div class="slot ${D.done && i >= D.picks.length ? 'rec' : ''} ${!D.done && i === D.picks.length ? 'cur' : ''}">${c ? cardHTML(c, { cls: (!D.done && i === D.last) || (D.done && i >= D.picks.length) ? 'pop' : '' }) : ''}</div>`; }).join('');
   $('#d-offer').innerHTML = D.done ? '' : D.pairA.map((c, i) => `<div class="oc ${D.sel === i ? 'sel' : D.sel !== null ? 'dim' : ''}" data-dg="offer:${i}" role="button" tabindex="0" aria-pressed="${D.sel === i}">${cardHTML(c)}${offerDetail(c)}</div>`).join('');
