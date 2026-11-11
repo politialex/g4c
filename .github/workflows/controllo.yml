@@ -1,0 +1,61 @@
+name: Controllo
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  sintassi-script:
+    name: Sintassi script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Controlla gli script inline di index.html
+        run: |
+          node <<'JS'
+          'use strict';
+          const fs = require('fs');
+          const { spawnSync } = require('child_process');
+
+          const file = 'index.html';
+          if (!fs.existsSync(file)) {
+            console.error('Errore: index.html è assente.');
+            process.exit(1);
+          }
+
+          const html = fs.readFileSync(file, 'utf8');
+          const re = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+          let n = 0;
+          let failed = false;
+          let match;
+          while ((match = re.exec(html)) !== null) {
+            const attrs = match[1];
+            if (/\bsrc\s*=/i.test(attrs)) continue;
+            if (/\btype\s*=\s*(['"])module\1/i.test(attrs)) continue;
+            const typ = /\btype\s*=\s*(['"])([^'"]+)\1/i.exec(attrs);
+            if (typ && !/^(text\/javascript|application\/javascript|javascript)$/i.test(typ[2])) continue;
+
+            n += 1;
+            const tmp = `.script-check-${n}.js`;
+            fs.writeFileSync(tmp, match[2]);
+            const result = spawnSync('node', ['--check', tmp], { encoding: 'utf8' });
+            fs.unlinkSync(tmp);
+            if (result.status !== 0) {
+              console.error(`Script inline #${n}: errore di sintassi`);
+              process.stderr.write(result.stderr || result.stdout || '');
+              failed = true;
+            } else {
+              console.log(`Script inline #${n}: ok`);
+            }
+          }
+
+          if (n === 0) {
+            console.log('Nessuno script inline da controllare.');
+          }
+          process.exit(failed ? 1 : 0);
+          JS
