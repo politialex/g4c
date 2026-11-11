@@ -4,7 +4,7 @@
 
 <br>
 
-[![Gioca ora](https://img.shields.io/badge/%E2%96%B6%20GIOCA%20ORA-nel%20browser-ffb020?style=for-the-badge&labelColor=040a12)](https://politialex.github.io/ingranaggi-arcani/)
+[![Gioca ora](https://img.shields.io/badge/%E2%96%B6%20GIOCA%20ORA-nel%20browser-ffb020?style=for-the-badge&labelColor=040a12)](https://politialex.github.io/g4c/)
 ![Stato](https://img.shields.io/badge/stato-prototipo%20di%20playtest-3fe6ff?style=for-the-badge&labelColor=040a12)
 ![Un solo file](https://img.shields.io/badge/1%20file%20HTML-0%20dipendenze-b57bff?style=for-the-badge&labelColor=040a12)
 
@@ -151,6 +151,10 @@ Non vedi le scelte della CPU né gli scarti che ricevi: durante il Draft il tuo 
 Questo è un **prototipo di playtest**: serve a mettere alla prova regole, bilanciamento e flusso prima di pensare a una versione nativa per iOS e Android. Molti numeri sono ipotesi da verificare giocando: probabilità di sblocco, forza delle carte, durata delle partite.
 
 Hai giocato? A fine partita apri **Statistiche partita e log** e tocca **Copia log partita (JSON)**: contiene mosse, catture e tempi di decisione. Incollalo dove vuoi segnalarmi cosa funziona e cosa no.
+
+## Come contribuire
+
+Il flusso di lavoro (branch, pull request e anteprima senza toccare Pages) è descritto in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Crediti
 
