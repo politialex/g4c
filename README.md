@@ -52,7 +52,7 @@ La base è sempre attiva; le altre quattro sono interruttori che puoi accendere 
 | **Combo** | Le carte catturate da Same o Plus **attaccano a loro volta** i vicini, a catena. Richiede Same o Plus. |
 | **Elementi** | Sei elementi più il neutro. Su una cella del tuo elemento ricevi +1 a tutti i lati; su un elemento diverso, o se sei neutra, −1. |
 
-I numeri vanno da 1 a 9 e poi in **esadecimale**: A = 10, B = 11 … F = 15. I valori da A in su sono riservati alle leggendarie.
+I numeri sui lati sono **decimali**. Sopra 9 compaiono solo con i bonus; sulle leggendarie il valore più alto stampato è 10.
 
 ## Le carte
 
@@ -65,8 +65,8 @@ I numeri vanno da 1 a 9 e poi in **esadecimale**: A = 10, B = 11 … F = 15. I v
 
 | Carta | Rarità | Elemento | N · E · S · O | Effetto |
 |---|---|---|---|---|
-| **Baluardo** | Leggendaria | Neutro | A · 8 · 7 · A | Corazza. Giocata: pesca 1 carta. |
-| **Sole** | Leggendaria | Luce | A · 7 · 9 · 7 | Aura: alleate adiacenti +1 a tutti i lati. |
+| **Baluardo** | Leggendaria | Neutro | 10 · 8 · 7 · 10 | Corazza. Giocata: pesca 1 carta. |
+| **Sole** | Leggendaria | Luce | 10 · 7 · 9 · 7 | Aura: alleate adiacenti +1 a tutti i lati. |
 | **Ancora** | Epica | Acqua | 6 · 7 · 4 · 6 | Aura: alleate Acqua adiacenti +1 a tutti i lati. |
 | **Esplosione** | Epica | Fuoco | 7 · 5 · 3 · 7 | Giocata: +3 a tutti i lati solo per i confronti di questo turno. |
 | **Martello** | Epica | Vento | 8 · 7 · 2 · 7 | Giocata: -2 ai lati rivolti verso questa carta della nemica adiacente più forte (permanente). |
@@ -91,7 +91,7 @@ I numeri vanno da 1 a 9 e poi in **esadecimale**: A = 10, B = 11 … F = 15. I v
 | **Stella** | Comune | Luce | 7 · 4 · 3 · 4 | — |
 | **Vento** | Comune | Vento | 8 · 3 · 4 · 3 | — |
 
-*Lati nell'ordine nord · est · sud · ovest, in esadecimale.*
+*Lati nell'ordine nord · est · sud · ovest, in decimale.*
 
 </details>
 
@@ -113,7 +113,7 @@ flowchart LR
 
 La pagina di fine partita ti mostra quanto manca alla prossima carta. Lo sblocco è casuale, con le rarità alte più difficili da ottenere.
 
-**La campagna è un tutorial**, non un obbligo: puoi sfidare la CPU fin dal primo avvio. Sono rompicapo brevi, uno per concetto: cattura base, numeri esadecimali, passare, Same, Plus, Combo, Elementi, effetti delle carte, mazzi e Draft.
+**La campagna è un tutorial**, non un obbligo: puoi sfidare la CPU fin dal primo avvio. Sono rompicapo brevi, uno per concetto: cattura base, più catture in una mossa, passare, Plus, Combo, Elementi, effetti delle carte, poi Same come regola avanzata, mazzi e Draft.
 
 **Tre livelli di CPU.** La Facile gioca con carte comuni e rare e sceglie a caso; la Media può usare anche le epiche; la Alta arriva alle leggendarie e sceglie quasi sempre la carta più forte.
 
