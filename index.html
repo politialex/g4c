@@ -87,6 +87,7 @@ select{font:600 14px var(--serif);color:var(--parch);background:#08141f;border:1
 .row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;color:var(--parch2)}
 .row b{color:#fff}
 .seg{display:flex;gap:8px}.seg button{flex:1;min-height:44px}
+.seg.eq{flex-wrap:wrap}.seg.eq button{flex:1 1 30%;font-size:12.5px;letter-spacing:.04em;padding:0 8px}
 .tg{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line2);cursor:pointer}
 .tg .t{flex:1}.tg b{display:block;font:700 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:#fff}.tg small{color:var(--parch2);font-size:13px}
 .tg.off{opacity:.45;cursor:default}
@@ -131,7 +132,7 @@ textarea{width:100%;height:100px;background:#08141f;color:var(--parch);border:1p
 .card.r-legendary .fr{background-image:linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc)),linear-gradient(var(--rc),var(--rc))}
 .card.r-legendary .fr::after{content:"";position:absolute;left:50%;top:3.2cqw;width:16cqw;height:1.2cqw;transform:translateX(-50%);background:var(--rc)}
 .dv{position:absolute;z-index:3;width:22cqw;height:17cqw;transform:translate(-50%,-50%);background:rgba(3,9,16,.94);border:.8cqw solid var(--fc);display:flex;align-items:center;justify-content:center}
-.dv i{font:800 12.5cqw/1 var(--disp);font-style:normal;color:#fff}
+.dv i{font:800 12.5cqw/1 var(--disp);font-style:normal;color:#fff}.dv i.wide{font-size:9.2cqw;letter-spacing:-.05em}
 .dv.up i{color:#7dffb8}.dv.down i{color:#ff8fa8}.dv.up i::after,.dv.down i::after{font-size:.42em;margin-left:.15em;vertical-align:.5em}.dv.up i::after{content:"▲"}.dv.down i::after{content:"▼"}
 .dv.n{left:50cqw;top:14cqw}.dv.s{left:50cqw;top:126cqw}.dv.w{left:14cqw;top:70cqw}.dv.e{left:86cqw;top:70cqw}
 .card .el{position:absolute;z-index:3;left:85cqw;top:12.5cqw;width:11cqw;height:11cqw;transform:translate(-50%,-50%) rotate(45deg);display:flex;align-items:center;justify-content:center;background:rgba(3,9,16,.94);border:.7cqw solid currentColor}
@@ -191,7 +192,7 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
 .od{display:flex;flex-direction:column;gap:3px;margin-top:8px;text-align:left}.od b{font:800 14px var(--disp);letter-spacing:.1em;text-transform:uppercase;color:#fff}
 .od .m{font-size:13px;color:var(--parch2)}.od p{margin:4px 0 0;font-size:14.5px;line-height:1.35;color:var(--parch)}
 /* ---------- partita ---------- */
-#s-game{height:100dvh;display:flex;flex-direction:column;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;overflow:hidden}
+#s-game{position:relative;height:100dvh;display:flex;flex-direction:column;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;overflow:hidden}
 .ghdr{display:flex;align-items:center;gap:8px;padding:2px 4px}
 .circ{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 12px/1 var(--disp);letter-spacing:.06em;color:#fff;background:#07121f;border:2px solid var(--blue);flex:none}
 .circ.c{border-color:var(--red)}
@@ -208,6 +209,8 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
   linear-gradient(180deg,rgba(10,22,38,.85),rgba(4,9,16,.95))}
 .cell{aspect-ratio:5/7;position:relative;border:1px solid rgba(63,230,255,.22);background:linear-gradient(180deg,#081423,#050b14);overflow:hidden}
 .cell.ok{border-color:var(--cy);background:linear-gradient(180deg,#0b2236,#071624)}
+.cell.sug{border-color:var(--am);box-shadow:inset 0 0 0 2px var(--am)}.cell.sug .lbl{color:var(--am2)}
+.cell.blocked{border-color:var(--am);cursor:default;background:repeating-linear-gradient(-45deg,rgba(255,176,32,.14) 0 6px,transparent 6px 12px),linear-gradient(180deg,#081423,#050b14)}.cell.blocked .wm{color:var(--am2);opacity:1}
 .cell .lbl{position:absolute;left:3px;top:2px;font:600 12px var(--disp);letter-spacing:.06em;color:rgba(155,200,220,.6)}
 .cell .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 12px var(--disp);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
 .cell-fire{border-color:var(--fire)}.cell-water{border-color:var(--water)}.cell-earth{border-color:var(--earth)}.cell-wind{border-color:var(--wind)}.cell-light{border-color:var(--light)}.cell-shadow{border-color:var(--shadow)}
@@ -231,6 +234,14 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
 .modal .mcount{font:700 13px var(--disp);letter-spacing:.2em;color:var(--cy);display:flex;flex-direction:column;gap:2px}.modal .mcount small{font:500 12px var(--serif);letter-spacing:.02em;color:var(--parch2)}
 @media (hover:none){.modal .mcount small{display:none}}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(4,10,18,.96);border:1px solid var(--cy);color:var(--cy);padding:10px 20px;font:700 13px var(--disp);letter-spacing:.14em;pointer-events:none;opacity:0;transition:opacity .2s;z-index:70}.toast.on{opacity:1}
+.rib{position:absolute;z-index:8;left:50%;top:46%;transform:translate(-50%,-50%);pointer-events:none;text-align:center;background:rgba(4,10,18,.94);border:1px solid var(--am);padding:8px 16px;min-width:200px}
+.rib b{display:block;font:900 22px/1 var(--disp);letter-spacing:.16em;color:var(--am2)}
+.rib .deltas{display:flex;justify-content:center;gap:16px;margin-top:6px;font:800 18px/1 var(--disp)}
+.rib .up{color:var(--ok)}.rib .dn{color:#ff8fa6}
+.rib.pop{animation:ribIn .18s var(--over)}
+@keyframes ribIn{from{transform:translate(-50%,-50%) scale(1.18);opacity:.2}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+body.hit #board{filter:brightness(1.5) saturate(1.2)}
+.decisive{margin:14px 0;text-align:center;color:var(--parch)}.decisive h2{color:var(--am2)}.decisive p{margin:4px 0;color:#fff}
 .loading{position:fixed;inset:0;z-index:80;background:rgba(3,8,16,.95);display:flex;align-items:center;justify-content:center;color:var(--cy);font:700 14px var(--disp);letter-spacing:.2em}
 .modal.anim{animation:mIn .26s var(--spring)}.modal.anim .mc{animation:cardIn .46s var(--over)}.modal.anim h3,.modal.anim .m,.modal.anim .fxd,.modal.anim .acts{animation:scrIn .4s .12s var(--spring) both}
 .modal.out{animation:mOut .2s var(--spring) forwards}.modal.out .mc{animation:cardOut .2s var(--spring) forwards}
@@ -269,6 +280,11 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
     <div class="row"><span>Mazzo</span><span><b id="deck-name"></b> <button id="deck-change" class="mini">Cambia</button></span></div>
     <div class="row" style="flex-direction:column;align-items:stretch"><span>Difficoltà</span><div class="seg" id="seg-level"></div></div>
     <div id="toggles"></div>
+    <div class="row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <span id="eq-label">Equilibrio turni</span>
+      <div class="seg eq" id="seg-eq" role="radiogroup" aria-labelledby="eq-label"></div>
+      <p class="note" id="eq-note" style="margin:0"></p>
+    </div>
   </div>
   <div class="stack">
     <button id="go-draft" class="big">Draft mode<small>5 round: scegli 1 carta da una coppia, l'altra va alla CPU; la CPU fa lo stesso in contemporanea e il suo scarto va a te. Mazzo finale da 10.</small></button>
@@ -299,7 +315,8 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
 </section>
 
 <section id="s-game" hidden>
-  <div class="coach" id="coach" hidden role="dialog" aria-live="polite"><div id="coach-text"></div><div class="r"><button id="coach-skip">Chiudi tutorial</button><button class="primary" id="coach-next">Avanti</button></div></div>
+  <div class="coach" id="coach" hidden role="status"><div id="coach-text"></div><div class="r"><button id="coach-skip">Chiudi tutorial</button><button class="primary" id="coach-next">Avanti</button></div></div>
+  <div id="rib" class="rib" role="status" hidden><b>RIBALTONE</b><span class="deltas"><span data-dp></span><span data-dc></span></span></div>
   <div class="ghdr">
     <div class="circ"><span>TU</span></div>
     <div class="gmid"><b id="g-score">0 – 0</b><span id="g-sub"></span></div>
@@ -315,6 +332,7 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
   <div class="ghdr" style="justify-content:center;gap:24px"><div class="circ"><span>TU</span></div><div class="gmid" style="flex:none"><b id="e-score"></b></div><div class="circ c"><span>CPU</span></div></div>
   <div class="res" id="res"></div>
   <p class="note" id="resdet" style="text-align:center"></p>
+  <section id="decisive" class="panel decisive" hidden aria-labelledby="dec-h"></section>
   <div id="reward" class="rewardbox" hidden></div>
   <div class="stack"><button class="primary big" id="again">Rigioca</button><button class="big" id="menu">Torna al menu principale</button></div>
   <details><summary>Statistiche partita e log</summary><table id="gstats"></table><div class="stack"><button id="copy1">Copia log partita (JSON)</button><button id="copyAll">Copia log sessione (JSON)</button><button id="clearSess">Cancella sessione salvata</button></div><textarea id="ta" hidden readonly></textarea><p class="note" id="sessinfo"></p></details>
@@ -335,7 +353,7 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
     <button class="primary" id="c-apply">Applica modifiche</button>
     <div style="display:flex;gap:8px"><button id="c-import" style="flex:1">Importa CSV</button><button id="c-export" style="flex:1">Esporta CSV</button></div>
     <button id="c-analyze">Analisi bilanciamento</button>
-    <button id="c-claude">Chiedi a Claude un parere</button>
+    <button id="c-claude" hidden>Chiedi a Claude un parere</button>
     <button id="c-reset" class="danger">Ripristina predefinito</button>
     <button id="c-close">Chiudi</button>
   </div>
@@ -408,7 +426,7 @@ function buildPool(raw) {
 }
 let POOL = buildPool(CURRENT_RAW);
 const sidePower = c => c.n + c.e + c.s + c.w;
-const hx = v => Math.max(0, v).toString(16).toUpperCase();
+const hx = v => String(Math.max(0, v));
 
 // ---------- board ----------
 const rc = i => [Math.floor(i / SIZE), i % SIZE];
@@ -421,11 +439,11 @@ const isCorner = i => i === 0 || i === 3 || i === 12 || i === 15;
 function newBoard(rules, rng) {
   const elem = Array(CELLS).fill(null);
   if (rules.elemental) { shuffle([...Array(CELLS).keys()], rng).slice(0, 4).forEach(i => { elem[i] = ELEMENTS[Math.floor(rng() * ELEMENTS.length)]; }); }
-  return { cells: Array(CELLS).fill(null), elem };
+  return { cells: Array(CELLS).fill(null), elem, blocked: null };
 }
 const mkInst = (card, owner) => ({ card, owner, shield: card.fx.some(f => f.t === 'shield'), perm: { n: 0, e: 0, s: 0, w: 0 }, tm: 0, tms: { n: 0, e: 0, s: 0, w: 0 }, caps: {}, sw: false });
 const cloneInst = c => c && { card: c.card, owner: c.owner, shield: c.shield, perm: Object.assign({}, c.perm), tm: c.tm, tms: Object.assign({}, c.tms), caps: Object.assign({}, c.caps), sw: c.sw };
-const cloneBoard = b => ({ cells: b.cells.map(cloneInst), elem: b.elem.slice() });
+const cloneBoard = b => ({ cells: b.cells.map(cloneInst), elem: b.elem.slice(), blocked: b.blocked == null ? null : b.blocked });
 const baseSide = (c, d) => c.sw ? c.card[OPP[d]] : c.card[d];
 function auraMod(board, idx, dir) {
   const me = board.cells[idx]; let m = 0;
@@ -471,6 +489,7 @@ const extremeSide = (board, i, rules, mode) => { let best = null; SIDE_DIRS.forE
 
 // ---------- risoluzione piazzamento (muta il board, restituisce eventi) ----------
 function resolve(board, idx, card, owner, rules, ctx) {
+  if (board.blocked === idx) return [];
   const inst = mkInst(card, owner); board.cells[idx] = inst;
   const events = [], flipped = new Set(), seeds = [];
   const push = (e) => events.push(Object.assign({ depth: 0 }, e));
@@ -554,9 +573,10 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 function shuffle(a, rng) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const deckPower = d => d.reduce((s, c) => s + sidePower(c), 0);
 const other = w => (w === 'p' ? 'c' : 'p');
-const maxT = G => G.maxTurns || MAX_TURNS;
-const isOver = G => (G.turnsUsed.p >= maxT(G) && G.turnsUsed.c >= maxT(G)) || G.board.cells.every(c => c);
-const emptyCells = G => G.board.cells.map((c, i) => c ? -1 : i).filter(i => i >= 0);
+const capFor = (G, w) => (G.turnCap && G.turnCap[w] != null) ? G.turnCap[w] : (G.maxTurns || MAX_TURNS);
+const boardFull = G => { for (let i = 0; i < CELLS; i++) if (!G.board.cells[i] && G.board.blocked !== i) return false; return true; };
+const isOver = G => (G.turnsUsed.p >= capFor(G, 'p') && G.turnsUsed.c >= capFor(G, 'c')) || boardFull(G);
+const emptyCells = G => G.board.cells.map((c, i) => (c || G.board.blocked === i) ? -1 : i).filter(i => i >= 0);
 const score = (G, w) => G.board.cells.filter(c => c && c.owner === w).length;
 function beginTurn(G) {
   const w = G.current; G.turnNo++;
@@ -568,19 +588,42 @@ function beginTurn(G) {
 function logMove(G, who, card, cell, pass, events, meta) {
   G.moves.push({ n: G.turnNo, who, card: card ? card.id : null, cell: cell != null ? cellLabel(cell) : null, pass, tMs: meta ? meta.tMs : null, previews: meta ? meta.previews : null, flips: events.filter(e => e.from !== e.to).map(e => ({ cell: cellLabel(e.idx), cause: e.cause, depth: e.depth })), fx: events.filter(e => e.from === e.to).map(e => e.cause) });
 }
+function stampMove(G, who, card, bP, bC, events) {
+  const aP = score(G, 'p'), aC = score(G, 'c');
+  const capsN = events.filter(e => e.from !== e.to).length;
+  const advBefore = bP - bC, advAfter = aP - aC;
+  const leadB = bP > bC ? 'p' : bC > bP ? 'c' : null;
+  const leadA = aP > aC ? 'p' : aC > aP ? 'c' : null;
+  const ribaltone = capsN >= 3 || !!(leadB && leadA && leadB !== leadA);
+  const mv = G.moves[G.moves.length - 1];
+  if (mv) Object.assign(mv, { swing: advAfter - advBefore, caps: capsN, dP: aP - bP, dC: aC - bC, advBefore, advAfter, ribaltone, cardName: card ? card.name : null });
+  if (who === 'p' && capsN > 0 && G.firstCapMs == null && G.startedAt) {
+    G.firstCapMs = Date.now() - G.startedAt;
+    const arr = store.get('ttfc', []);
+    if (Array.isArray(arr)) { arr.push({ ms: G.firstCapMs, mode: G.mode || '', ts: Date.now() }); store.set('ttfc', arr.slice(-30)); }
+  }
+  if (G.onboard && who === 'p' && capsN > 0 && !G.onboardHit) {
+    G.onboardHit = true; G.suggest = null;
+    $('#coach-text').textContent = 'Catturata. Il numero più alto prende la carta vicina.';
+  }
+  return { ribaltone, dP: aP - bP, dC: aC - bC, caps: capsN };
+}
 function applyPlace(G, who, handIdx, cell, meta) {
+  if (G.board.blocked === cell || G.board.cells[cell]) return { card: null, cell, events: [], who, ribaltone: false, dP: 0, dC: 0, caps: 0, rejected: true };
+  const bP = score(G, 'p'), bC = score(G, 'c');
   const card = G.hands[who].splice(handIdx, 1)[0];
   const events = resolve(G.board, cell, card, who, G.rules, G);
   const d0 = events.reduce((m, e) => Math.max(m, e.depth), 0) + 1;
   events.push(...endTriggers(G.board, who, G.rules, d0));
   G.turnsUsed[who]++; logMove(G, who, card, cell, false, events, meta); G.current = other(who);
-  return { card, cell, events, who };
+  return Object.assign({ card, cell, events, who }, stampMove(G, who, card, bP, bC, events));
 }
 function applyPass(G, who, meta) {
+  const bP = score(G, 'p'), bC = score(G, 'c');
   G.turnsUsed[who]++;
   const events = endTriggers(G.board, who, G.rules, 0);
   logMove(G, who, null, null, true, events, meta); G.current = other(who);
-  return { card: null, cell: null, events, who, pass: true };
+  return Object.assign({ card: null, cell: null, events, who, pass: true }, stampMove(G, who, null, bP, bC, events));
 }
 
 // ---- CPU ----
@@ -588,7 +631,7 @@ let SIDE_VALUES = POOL.flatMap(c => SIDE_DIRS.map(d => c[d]));
 const pGreater = v => SIDE_VALUES.filter(x => x > v).length / SIDE_VALUES.length;
 function exposure(board, owner, rules) {
   let s = 0;
-  board.cells.forEach((c, i) => { if (!c || c.owner !== owner) return; for (const d of SIDE_DIRS) { const ni = neighbor(i, d); if (ni >= 0 && !board.cells[ni]) s += pGreater(effVal(board, i, d, rules)); } });
+  board.cells.forEach((c, i) => { if (!c || c.owner !== owner) return; for (const d of SIDE_DIRS) { const ni = neighbor(i, d); if (ni >= 0 && !board.cells[ni] && board.blocked !== ni) s += pGreater(effVal(board, i, d, rules)); } });
   return s;
 }
 function cpuChoose(G, level) {
@@ -620,10 +663,10 @@ const MISSIONS = [
     intro: 'Piazzi una carta accanto a una nemica. Se il tuo valore sul lato di contatto è maggiore del suo, la catturi.',
     goal: 'Cattura 1 carta con il confronto base.', objective: [{ t: 'cap', cause: 'base', n: 1, label: 'cattura base ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Sentinella', 3, 3, 3, 3)]], hand: [syn('Recluta', 6, 6, 6, 6)] }) },
-  { id: '1.2', ch: '1 Fondamenti', title: 'Leggere i numeri', teach: 'Valori esadecimali A–F', type: 'puzzle', rules: {}, maxTurns: 1,
-    intro: 'I valori vanno da 1 a 9, poi A=10, B=11, C=12, D=13, E=14, F=15. A è più grande di 9. Tocca una carta per leggerne i valori.',
+  { id: '1.2', ch: '1 Fondamenti', title: 'Più catture', teach: 'Più catture in una mossa', type: 'puzzle', rules: {}, maxTurns: 1,
+    intro: 'Una carta può toccare più nemiche insieme. Se su ogni lato il tuo numero è più alto, le catturi tutte con una sola mossa.',
     goal: 'Cattura 3 carte con una sola mossa.', objective: [{ t: 'cap', cause: 'base', n: 3, perMove: true, label: '3 catture in una mossa' }],
-    build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 8, 3)], ['C2', 'c', syn('Nemica E', 3, 3, 3, 9)], ['B3', 'c', syn('Nemica S', 9, 3, 3, 3)]], hand: [syn('Prova 9', 9, 9, 9, 9), syn('Prova A', 10, 12, 15, 3)] }) },
+    build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 4, 3)], ['C2', 'c', syn('Nemica E', 3, 3, 3, 4)], ['B3', 'c', syn('Nemica S', 4, 3, 3, 3)]], hand: [syn('Stretta', 6, 6, 6, 2), syn('Corta', 3, 6, 6, 6)] }) },
   { id: '1.3', ch: '1 Fondamenti', title: 'Saper aspettare', teach: 'Passa', type: 'puzzle', rules: {}, maxTurns: 2,
     intro: 'Hai una carta debole e una sola cella libera. Se la giochi ora, il tabellone si riempie e la partita finisce. Puoi saltare il turno con Salta: ogni passaggio consuma il turno. Dal turno dopo peschi.',
     goal: 'Salta almeno un turno e vinci.', objective: [{ t: 'pass', n: 1, label: 'almeno 1 passaggio' }],
@@ -712,7 +755,7 @@ function newMissionGame(m) {
   const board = { cells: Array(CELLS).fill(null), elem: Array(CELLS).fill(null) };
   (b.board || []).forEach(([l, o, c]) => { board.cells[IDX(l)] = mkInst(c, o); });
   Object.entries(b.elem || {}).forEach(([l, el]) => { board.elem[IDX(l)] = el; });
-  return { rules, first: 'p', current: 'p', board, decks: { p: (b.deck || []).slice(), c: (b.cpuDeck || []).slice() }, hands: { p: b.hand.slice(), c: (b.cpuHand || []).slice() }, deckIds: { p: [], c: [] }, power: { p: 0, c: 0 }, turnsUsed: { p: 0, c: 0 }, passesLeft: { p: 1, c: 1 }, turnNo: 0, moves: [], maxTurns: m.maxTurns, mission: m, script: (b.script || []).slice(), mode: 'camp', lvl: 'media' };
+  return { rules, first: 'p', current: 'p', board, decks: { p: (b.deck || []).slice(), c: (b.cpuDeck || []).slice() }, hands: { p: b.hand.slice(), c: (b.cpuHand || []).slice() }, deckIds: { p: [], c: [] }, power: { p: 0, c: 0 }, turnsUsed: { p: 0, c: 0 }, turnNo: 0, moves: [], maxTurns: m.maxTurns, mission: m, script: (b.script || []).slice(), mode: 'camp', lvl: 'media' };
 }
 function evalObjective(g, obj) {
   const pm = g.moves.filter(m => m.who === 'p');
@@ -748,18 +791,34 @@ const TOGGLES = [
   { k: 'plus', t: 'Plus', d: 'Se ≥2 coppie lato + lato opposto hanno la stessa somma, catturi i nemici del gruppo.' },
   { k: 'combo', t: 'Combo', d: 'Le carte catturate da Same o Plus attaccano a loro volta i vicini in catena.', dep: r => r.same || r.plus },
   { k: 'elemental', t: 'Elementi', d: '4 celle elementali: stesso elemento +1, elemento diverso −1 su tutti i lati.' },
+  { k: 'effects', t: 'Effetti', d: 'Le carte applicano Corazza, Aura, pesca e gli altri effetti scritti.' },
 ];
+const EQ_VALUES = [['off', 'Spento'], ['vuota', 'Cella vuota'], ['bloccata', 'Cella bloccata']];
+const EQ_HELP = {
+  off: 'Spento: entrambi piazzano 8 carte. Chi muove per secondo fa l\'ultima mossa.',
+  vuota: 'Cella vuota: chi muove per secondo piazza 7 carte. Resta una cella libera.',
+  bloccata: 'Cella bloccata: una cella a caso è bloccata dall\'inizio. Si gioca sulle altre 15.',
+};
+const CHAPTER_RULE = { '2 Same': 'same', '3 Plus': 'plus', '4 Combo': 'combo', '6 Effetti': 'effects' };
 const CAUSE_LABEL = { base: 'CATTURA', same: 'SAME', plus: 'PLUS', combo: 'COMBO', blocked: 'CORAZZA', draw: 'PESCA +1', buff: 'BUFF', debuff: 'DEBUFF', grow: 'CRESCE', swap: 'INVERTE' };
-const T = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? { first: 200, depth: 250, step: 80, tail: 250, cpu: 400 } : { first: 550, depth: 600, step: 140, tail: 500, cpu: 900 };
+const REDUCE_MOTION = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const T = REDUCE_MOTION ? { first: 200, depth: 250, step: 80, tail: 250, cpu: 400 } : { first: 550, depth: 600, step: 140, tail: 500, cpu: 900 };
 
 // ---------- persistenza (best-effort) ----------
 const store = {
   get(k, d) { try { const v = localStorage.getItem('ia2_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('ia2_' + k, JSON.stringify(v)); } catch (e) { } },
 };
+function storageEmpty() {
+  try { return ['owned', 'camp', 'rules', 'decks', 'prog', 'tutSeen', 'session', 'onboard'].every(k => localStorage.getItem('ia2_' + k) == null); }
+  catch (e) { return false; }
+}
+const FIRST_LAUNCH = storageEmpty();
+const normEq = v => (v === 'off' || v === 'vuota' || v === 'bloccata') ? v : 'vuota';
 const ST = {
   decks: store.get('decks', null), deckIdx: store.get('deckIdx', 0), cpu: store.get('cpu', 'media'),
-  rules: Object.assign({ same: true, plus: true, combo: true, elemental: false }, store.get('rules', {})),
+  rules: Object.assign(FIRST_LAUNCH ? { same: false, plus: false, combo: false, elemental: false, effects: false } : { same: true, plus: true, combo: true, elemental: false, effects: true }, store.get('rules', {})),
+  equilibrio: normEq(store.get('equilibrio', 'vuota')),
   owned: store.get('owned', null), prog: store.get('prog', { pts: 0, games: 0, wins: 0 }), session: store.get('session', []), tutSeen: store.get('tutSeen', false), camp: store.get('camp', { done: {}, complete: false, rewarded: {} }),
 };
 ST.camp.rewarded = ST.camp.rewarded || {};
@@ -788,8 +847,9 @@ const saveProg = () => store.set('prog', ST.prog);
 if (location.hash === '#debug') { ST.owned = ACTIVE().map(c => c.id); }
 initOwned();
 const ownDraft = () => shuffle(OWN().filter(c => c.rarity !== 'legendary' && c.rarity !== 'epic'), Math.random).slice(0, DECK_SIZE);
-const saveST = () => { store.set('decks', ST.decks); store.set('deckIdx', ST.deckIdx); store.set('cpu', ST.cpu); store.set('rules', ST.rules); };
-const fullRules = () => ({ same: ST.rules.same, plus: ST.rules.plus, combo: ST.rules.combo && (ST.rules.same || ST.rules.plus), comboBase: false, maxDepth: 99, diagonals: false, spDiagonals: false, elemental: ST.rules.elemental, effects: true });
+const saveST = () => { store.set('decks', ST.decks); store.set('deckIdx', ST.deckIdx); store.set('cpu', ST.cpu); store.set('rules', ST.rules); store.set('equilibrio', ST.equilibrio); };
+if (FIRST_LAUNCH) saveST();
+const fullRules = () => ({ same: ST.rules.same, plus: ST.rules.plus, combo: ST.rules.combo && (ST.rules.same || ST.rules.plus), comboBase: false, maxDepth: 99, diagonals: false, spDiagonals: false, elemental: ST.rules.elemental, effects: ST.rules.effects !== false });
 
 function defaultDeckIds() {
   const by = k => OWN().filter(c => c.rarity === k);
@@ -827,7 +887,7 @@ function show(id) {
 function route() { sanitizeDecks(); if (screen === 'home') renderHome(); else if (screen === 'camp') renderCamp(); else if (screen === 'play') renderPlay(); else if (screen === 'coll') renderColl(); }
 function renderHome() {
   const n = MISSIONS.filter(m => ST.camp.done[m.id]).length, d = curDeck();
-  $('#h-camp-sub').textContent = `Tutorial · ${n}/${MISSIONS.length} missioni · 1 carta a capitolo`;
+  $('#h-camp-sub').textContent = LOCKED().length ? `Tutorial · ${n}/${MISSIONS.length} missioni · 1 carta a capitolo` : `Tutorial · ${n}/${MISSIONS.length} missioni · collezione completa`;
   $('#h-play-sub').textContent = 'Partita contro la CPU con il tuo mazzo o il Draft';
   $('#h-coll-sub').textContent = `${ST.owned.length}/${ACTIVE().length} carte · ${d.name} ${d.ids.length}/${DECK_SIZE}`;
   $('#h-play').disabled = false; $('#h-camp').classList.remove('primary'); $('#h-play').classList.add('primary');
@@ -850,7 +910,7 @@ function showLoading(ms, cb) { $('#loading').hidden = false; setTimeout(() => { 
 const ART_IDS = new Set([]);
 function cardHTML(c, o = {}) {
   const f = o.eff || null, mode = o.owner ? 'm-game' : 'm-rar';
-  const vals = SIDE_DIRS.map(d => { const b = c[d], v = f ? f(d) : b; return `<span class="dv ${d} ${v > b ? 'up' : v < b ? 'down' : ''}"><i>${hx(v)}</i></span>`; }).join('');
+  const vals = SIDE_DIRS.map(d => { const b = c[d], v = f ? f(d) : b, s = hx(v); return `<span class="dv ${d} ${v > b ? 'up' : v < b ? 'down' : ''}"><i class="${String(s).length > 1 ? 'wide' : ''}">${s}</i></span>`; }).join('');
   const el = c.element !== 'none' ? `<span class="el el-${c.element}" title="${EL_NAME[c.element]}">${EL_ICON[c.element]}</span>` : '';
   const own = '';
   const art = c.icon ? iconSVG(c.icon) : `<b class="ini">${esc(c.name[0] || '?')}</b>`;
@@ -861,7 +921,8 @@ function openModal(c, actions = [], nav = null) {
   MNAV = nav;
   const act = nav ? nav.actions(c, nav.i) : actions, n = nav ? nav.items.length : 0;
   const arrows = nav && n > 1;
-  $('#modal').innerHTML = `<button class="x" id="m-x" aria-label="Chiudi">✕</button><div class="mrow">${arrows ? `<button class="nv" id="m-prev" aria-label="Carta precedente" ${nav.i === 0 ? 'disabled' : ''}>‹</button>` : ''}<div class="mc" id="m-card">${cardHTML(c)}</div>${arrows ? `<button class="nv" id="m-next" aria-label="Carta successiva" ${nav.i === n - 1 ? 'disabled' : ''}>›</button>` : ''}</div>${arrows ? `<div class="mcount">${nav.i + 1} / ${n}<small>scorri o usa ← →</small></div>` : ''}<h3>${esc(c.name)}</h3><p class="m">${RAR_NAME[c.rarity]} · ${EL_NAME[c.element]}${nav && nav.locked && nav.locked(c) ? ' · BLOCCATA' : ''} · potenza ${sidePower(c)} · N ${hx(c.n)} E ${hx(c.e)} S ${hx(c.s)} O ${hx(c.w)}</p><p class="fxd">${c.effectText ? esc(c.effectText) : 'Nessun effetto.'}${c.fxUnknown && c.fxUnknown.length ? '<br><small class="bad">Parte dell\'effetto non è riconosciuta dal motore.</small>' : ''}</p><div class="acts">${act.map((a, i) => `<button class="${a.cls || ''}" data-ma="${i}">${a.label}</button>`).join('')}</div>`;
+  const fxOff = !!(G && G.rules && G.rules.effects === false && c.effectText);
+  $('#modal').innerHTML = `<button class="x" id="m-x" aria-label="Chiudi">✕</button><div class="mrow">${arrows ? `<button class="nv" id="m-prev" aria-label="Carta precedente" ${nav.i === 0 ? 'disabled' : ''}>‹</button>` : ''}<div class="mc" id="m-card">${cardHTML(c)}</div>${arrows ? `<button class="nv" id="m-next" aria-label="Carta successiva" ${nav.i === n - 1 ? 'disabled' : ''}>›</button>` : ''}</div>${arrows ? `<div class="mcount">${nav.i + 1} / ${n}<small>scorri o usa ← →</small></div>` : ''}<h3>${esc(c.name)}</h3><p class="m">${RAR_NAME[c.rarity]} · ${EL_NAME[c.element]}${nav && nav.locked && nav.locked(c) ? ' · BLOCCATA' : ''} · potenza ${sidePower(c)} · N ${hx(c.n)} E ${hx(c.e)} S ${hx(c.s)} O ${hx(c.w)}</p><p class="fxd">${c.effectText ? esc(c.effectText) : 'Nessun effetto.'}${fxOff ? ' <small>(disattivato in questa partita)</small>' : ''}${c.fxUnknown && c.fxUnknown.length ? '<br><small class="bad">Parte dell\'effetto non è riconosciuta dal motore.</small>' : ''}</p><div class="acts">${act.map((a, i) => `<button class="${a.cls || ''}" data-ma="${i}">${a.label}</button>`).join('')}</div>`;
   const mm = $('#modal'), wasOpen = !mm.hidden && !mm.classList.contains('out');
   clearTimeout(modalT); mm.classList.remove('out'); mm.hidden = false;
   if (!wasOpen) { mm.classList.add('anim'); modalT = setTimeout(() => mm.classList.remove('anim'), 600); }
@@ -898,17 +959,33 @@ function renderPlay() {
   $('#go-deck').disabled = !chk.ok; $('#deck-warn').textContent = chk.ok ? '' : `${chk.msg} Completa il mazzo in Collezione, oppure usa il Draft.`;
   $('#seg-level').innerHTML = LEVELS.map(([k, l]) => `<button data-lv="${k}" class="${ST.cpu === k ? 'on' : ''}" aria-pressed="${ST.cpu === k}">${l}</button>`).join('');
   $('#toggles').innerHTML = TOGGLES.map(t => {
-    const off = t.dep ? !t.dep(ST.rules) : false, on = ST.rules[t.k] && !off;
+    const off = t.dep ? !t.dep(ST.rules) : false, on = !!ST.rules[t.k] && !off;
     return `<div class="tg ${on ? 'on' : ''} ${off ? 'off' : ''}" data-tg="${t.k}" role="switch" aria-checked="${on}" tabindex="0"><div class="t"><b>${t.t}</b><small>${t.d}${off ? ' (richiede Same o Plus)' : ''}</small></div><div class="knob"></div></div>`;
   }).join('');
-  $('#poolinfo').textContent = `Gli effetti delle carte sono sempre attivi. ${(CURRENT_RAW === RAW_POOL ? 'Pool predefinito' : 'Pool personalizzato')} · ${ACTIVE().length} carte attive (le altre sono nascoste). Il Draft usa tutte le carte attive, il mazzo solo quelle che possiedi. Valori in esadecimale: 1–9, A=10 … F=15. 8 turni a testa, passaggi illimitati (ogni passaggio consuma il turno).`;
+  $('#seg-eq').innerHTML = EQ_VALUES.map(([k, l]) => `<button type="button" role="radio" data-eq="${k}" class="${ST.equilibrio === k ? 'on' : ''}" aria-checked="${ST.equilibrio === k}" tabindex="0">${l}</button>`).join('');
+  $('#eq-note').textContent = EQ_HELP[ST.equilibrio] || EQ_HELP.vuota;
+  const fxLine = ST.rules.effects === false ? 'Gli effetti delle carte sono disattivati: si sbloccano nel capitolo 6, oppure attivali qui.' : 'Gli effetti delle carte sono attivi.';
+  $('#poolinfo').textContent = `${fxLine} ${(CURRENT_RAW === RAW_POOL ? 'Pool predefinito' : 'Pool personalizzato')} · ${ACTIVE().length} carte attive (le altre sono nascoste). Il Draft usa tutte le carte attive, il mazzo solo quelle che possiedi. I numeri sui lati sono decimali. Passaggi illimitati: ogni passaggio consuma il turno.`;
 }
-function toggleRule(k) { const t = TOGGLES.find(x => x.k === k); if (t.dep && !t.dep(ST.rules)) return; ST.rules[k] = !ST.rules[k]; if (!ST.rules.same && !ST.rules.plus) ST.rules.combo = false; saveST(); renderPlay(); }
+function toggleRule(k) { const t = TOGGLES.find(x => x.k === k); if (!t || (t.dep && !t.dep(ST.rules))) return; ST.rules[k] = !ST.rules[k]; if (!ST.rules.same && !ST.rules.plus) ST.rules.combo = false; saveST(); renderPlay(); }
+function setEquilibrio(v) { const n = normEq(v); if (!EQ_VALUES.some(([k]) => k === v) || n === ST.equilibrio) return; ST.equilibrio = n; saveST(); renderPlay(); }
 $('#s-play').addEventListener('click', e => {
   const lv = e.target.closest('[data-lv]'); if (lv) { ST.cpu = lv.dataset.lv; saveST(); renderPlay(); return; }
+  const eq = e.target.closest('[data-eq]'); if (eq) { setEquilibrio(eq.dataset.eq); return; }
   const tg = e.target.closest('[data-tg]'); if (tg) toggleRule(tg.dataset.tg);
 });
-$('#s-play').addEventListener('keydown', e => { const tg = e.target.closest('[data-tg]'); if (tg && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); toggleRule(tg.dataset.tg); } });
+$('#s-play').addEventListener('keydown', e => {
+  const tg = e.target.closest('[data-tg]'); if (tg && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); toggleRule(tg.dataset.tg); return; }
+  const eq = e.target.closest('[data-eq]'); if (!eq) return;
+  const order = EQ_VALUES.map(([k]) => k), i = order.indexOf(ST.equilibrio);
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setEquilibrio(eq.dataset.eq); }
+  else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const n = order[(i + (e.key === 'ArrowRight' ? 1 : order.length - 1)) % order.length];
+    setEquilibrio(n);
+    const btn = $('#seg-eq').querySelector(`[data-eq="${n}"]`); if (btn) btn.focus();
+  }
+});
 $('#deck-change').onclick = () => {
   $('#decklist').innerHTML = ST.decks.map((d, i) => { const ck = deckCheck(deckCards(d)); return `<button data-di="${i}" class="${i === ST.deckIdx ? 'primary' : ''}">${esc(d.name)} · ${d.ids.length}/${DECK_SIZE} ${ck.ok ? '' : '(incompleto)'}</button>`; }).join('');
   $('#decksheet').hidden = false;
@@ -998,14 +1075,14 @@ function onDrop(d, t) {
   else if ((d.kind === 'hand' || d.kind === 'prov') && screen === 'game') {
     if (!canAct()) return;
     const cell = t.closest('[data-cell]');
-    if (cell && !G.board.cells[+cell.dataset.cell]) setProv(d.kind === 'hand' ? +d.key : view.prov.hi, +cell.dataset.cell);
+    if (cell && !G.board.cells[+cell.dataset.cell] && G.board.blocked !== +cell.dataset.cell) setProv(d.kind === 'hand' ? +d.key : view.prov.hi, +cell.dataset.cell);
     else if (d.kind === 'prov' && t.closest('[data-drop="hand"]')) { view.prov = null; renderAll(); }
   }
 }
 
-$('#reset-prog').onclick = () => { const b = $('#reset-prog'); if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Tocca ancora per confermare'; setTimeout(() => { b.dataset.arm = ''; b.textContent = 'Azzera progressi (test)'; }, 4000); return; }
-  b.dataset.arm = ''; b.textContent = 'Azzera progressi (test)'; ST.owned = null; ST.prog = { pts: 0, games: 0, wins: 0 }; ST.camp = { done: {}, complete: false, rewarded: {} }; ST.decks = null;
-  store.set('owned', null); saveProg(); store.set('camp', ST.camp); initOwned(); sanitizeDecks(); renderColl(); toast('Progressi azzerati'); };
+$('#reset-prog').onclick = () => { const b = $('#reset-prog'); if (!b.dataset.arm) { b.dataset.arm = '1'; b.textContent = 'Tocca ancora per confermare'; setTimeout(() => { b.dataset.arm = ''; b.textContent = 'Azzera progressi (test)'; }, 4000); return; }
+  ['owned', 'prog', 'camp', 'decks', 'deckIdx', 'session', 'tutSeen', 'onboard', 'rules', 'ttfc'].forEach(k => { try { localStorage.removeItem('ia2_' + k); } catch (e) { } });
+  location.reload(); };
 // ---------- DRAFT ----------
 let DRAFT = null, lastMode = 'deck', lastOpts = null;
 const DRAFT_W = { common: 50, rare: 30, epic: 15, legendary: 5 };
@@ -1092,19 +1169,38 @@ let G = null, lastRecord = null, lvl = 'media';
 const view = { owners: [], lock: false, prov: null, provN: 0, passConfirm: false, flash: null, pop: null, marks: {}, placed: null, turnStart: 0, moves: 0 };
 const tut = { on: false, step: 0, explained: {} };
 const canAct = () => G && G.current === 'p' && !view.lock && !isOver(G);
+function quietDeck(deck, rules) {
+  if (!rules || rules.effects !== false) return deck;
+  return deck.map(c => Object.assign({}, c, { fx: [] }));
+}
 function newGameWith(rules, dp, dc, first) {
-  const a = shuffle(dp, Math.random), b = shuffle(dc, Math.random), f = first || (Math.random() < 0.5 ? 'p' : 'c');
-  const g = { rules: Object.assign({}, rules), first: f, current: f, board: newBoard(rules, Math.random), decks: { p: a.slice(), c: b.slice() }, hands: { p: [], c: [] }, deckIds: { p: a.map(c => c.id), c: b.map(c => c.id) }, power: { p: deckPower(a), c: deckPower(b) }, turnsUsed: { p: 0, c: 0 }, passesLeft: { p: 1, c: 1 }, turnNo: 0, moves: [] };
+  const a = shuffle(quietDeck(dp, rules), Math.random), b = shuffle(quietDeck(dc, rules), Math.random), f = first || (Math.random() < 0.5 ? 'p' : 'c');
+  const g = { rules: Object.assign({}, rules), first: f, current: f, board: newBoard(rules, Math.random), decks: { p: a.slice(), c: b.slice() }, hands: { p: [], c: [] }, deckIds: { p: a.map(c => c.id), c: b.map(c => c.id) }, power: { p: deckPower(a), c: deckPower(b) }, turnsUsed: { p: 0, c: 0 }, turnNo: 0, moves: [], startedAt: Date.now(), eq: 'off' };
   for (const w of ['p', 'c']) for (let i = 0; i < HAND_START; i++) { const c = g.decks[w].shift(); if (c) g.hands[w].push(c); }
   return g;
+}
+function applyEquilibrio(g) {
+  g.eq = 'off';
+  if (g.mission || g.mode === 'onboard' || g.mode === 'camp') return;
+  const eq = normEq(ST.equilibrio);
+  g.eq = eq;
+  if (eq === 'vuota') { g.turnCap = { p: MAX_TURNS, c: MAX_TURNS }; g.turnCap[other(g.first)] = MAX_TURNS - 1; }
+  else if (eq === 'bloccata') {
+    const open = [];
+    for (let i = 0; i < CELLS; i++) if (!g.board.cells[i]) open.push(i);
+    g.board.blocked = open[Math.floor(Math.random() * open.length)];
+    if (g.board.elem[g.board.blocked]) g.board.elem[g.board.blocked] = null;
+  }
 }
 function beginGame(mode, deckP, deckC, opts) {
   opts = opts || {}; lastMode = mode; lastOpts = opts; tut.on = mode === 'tutorial'; tut.step = 0; tut.explained = {};
   const r = opts.rules ? Object.assign(fullRules(), opts.rules, { combo: !!(opts.rules.combo && (opts.rules.same || opts.rules.plus)) }) : tut.on ? Object.assign(fullRules(), { same: true, plus: true, combo: true, elemental: false }) : fullRules();
+  if (opts.mission) r.effects = opts.rules && opts.rules.effects === false ? false : true;
   lvl = opts.lvl || (tut.on ? 'facile' : ST.cpu);
   G = newGameWith(r, deckP, deckC, tut.on ? 'p' : null); G.mode = mode; G.lvl = lvl; G.mission = opts.mission || null; prevHandN = 0; handKey = '';
+  applyEquilibrio(G);
   Object.assign(view, { owners: Array(CELLS).fill(null), lock: false, prov: null, passConfirm: false, flash: null, pop: null, marks: {}, placed: null });
-  show('game'); $('#strip').textContent = ''; toast(G.first === 'p' ? 'Inizi tu' : 'Inizia la CPU', 1400);
+  show('game'); $('#strip').textContent = ''; $('#rib').hidden = true; toast(G.first === 'p' ? 'Inizi tu' : 'Inizia la CPU', 1400);
   if (G.mission) missionIntro(G.mission); else if (tut.on) tutStep(1); else $('#coach').hidden = true;
   startTurn();
 }
@@ -1119,16 +1215,23 @@ function startTurn() {
   view.marks = {}; (G.startEvents || []).forEach(e => { view.marks[e.idx] = (view.marks[e.idx] ? view.marks[e.idx] + ' ' : '') + e.label; });
   view.lock = G.current === 'c'; view.prov = null; view.passConfirm = false; view.flash = null; view.pop = null; view.turnStart = Date.now(); view.moves = 0;
   renderAll();
-  if (G.current === 'c') setTimeout(cpuMove, T.cpu); else toast(drawn ? `Peschi: ${drawn.name}` : 'Mazzo esaurito', 1100);
+  if (G.current === 'c') setTimeout(cpuMove, T.cpu);
+  else {
+    if (!(G.onboard && !G.onboardHit)) toast(drawn ? `Peschi: ${drawn.name}` : 'Mazzo esaurito', 1100);
+    focusSuggest();
+  }
 }
 function cpuMove() {
   if (!G) return;
-  if (G.script && G.script.length) { const sc = G.script.shift(); if (sc === 'pass') { applyPass(G, 'c'); return startTurn(); } if (sc && G.hands.c[sc.hi] && !G.board.cells[IDX(sc.cell)]) { const res0 = applyPlace(G, 'c', sc.hi, IDX(sc.cell)); return animate(res0, startTurn); } }
+  if (G.script && G.script.length) { const sc = G.script.shift(); if (sc === 'pass') { applyPass(G, 'c'); return startTurn(); } if (sc && G.hands.c[sc.hi] && !G.board.cells[IDX(sc.cell)] && G.board.blocked !== IDX(sc.cell)) { const res0 = applyPlace(G, 'c', sc.hi, IDX(sc.cell)); return animate(res0, startTurn); } }
   const mv = cpuChoose(G, G.lvl === 'alta' ? 'difficile' : G.lvl);
   if (!mv) { applyPass(G, 'c'); return startTurn(); }
-  const res = applyPlace(G, 'c', mv.hi, mv.cell); animate(res, startTurn);
+  const res = applyPlace(G, 'c', mv.hi, mv.cell);
+  if (!res || res.rejected) { applyPass(G, 'c'); return startTurn(); }
+  animate(res, startTurn);
 }
 function setProv(hi, cell) {
+  if (G.board.blocked === cell || G.board.cells[cell]) return;
   view.prov = { hi, cell }; view.moves++;
   const card = G.hands.p[hi], all = resolve(cloneBoard(G.board), cell, card, 'p', G.rules), ev = all.filter(e => e.from !== e.to);
   view.provN = ev.length; view.passConfirm = false;
@@ -1144,8 +1247,8 @@ function renderHeader() {
   const c = counts(), sc = $('#g-score'), st = `${c.p} – ${c.c}`;
   if (sc.textContent !== st) { sc.textContent = st; sc.classList.remove('bump'); void sc.offsetWidth; sc.classList.add('bump'); }
   const cr = document.querySelectorAll('#s-game .ghdr .circ'); if (cr.length > 1) { const live = !isOver(G); cr[0].classList.toggle('act', live && G.current === 'p'); cr[1].classList.toggle('act', live && G.current === 'c'); }
-  const n = Math.min(maxT(G), G.turnsUsed[G.current] + (isOver(G) ? 0 : 1));
-  $('#g-sub').textContent = view.prov && view.pvScore ? `Anteprima: ${view.pvScore.p} – ${view.pvScore.c}` : isOver(G) ? 'Fine' : `Turno ${n}/${maxT(G)} · ${G.current === 'p' ? 'tocca a te' : 'CPU'} · mazzo ${G.decks.p.length}`;
+  const cap = capFor(G, G.current), n = Math.min(cap, G.turnsUsed[G.current] + (isOver(G) ? 0 : 1));
+  $('#g-sub').textContent = view.prov && view.pvScore ? `Anteprima: ${view.pvScore.p} – ${view.pvScore.c}` : isOver(G) ? 'Fine' : `Turno ${n}/${cap} · ${G.current === 'p' ? 'tocca a te' : 'CPU'} · mazzo ${G.decks.p.length}`;
 }
 let boardKeys = [];
 function renderBoard() {
@@ -1153,8 +1256,10 @@ function renderBoard() {
   if (root.children.length !== CELLS) { root.innerHTML = Array.from({ length: CELLS }, () => '<div class="cell"></div>').join(''); boardKeys = []; }
   for (let i = 0; i < CELLS; i++) {
     const c = G.board.cells[i], el = G.board.elem[i], isProv = view.prov && view.prov.cell === i;
-    let h = `<div class="cell ${el ? 'cell-' + el : ''} ${canAct() && !c && !isProv ? 'ok' : ''}" data-cell="${i}" ${c ? `data-dg="cell:${i}"` : ''}><span class="lbl">${cellLabel(i)}</span>`;
-    if (c) { const pv = view.prov && view.pv ? view.pv[i] : null, o = (pv && pv.to) || view.owners[i] || c.owner; h += cardHTML(c.card, { owner: o, eff: d => effVal(G.board, i, d, G.rules), cls: (view.flash === i ? 'flipA' : view.pop === i ? 'pop' : '') + (view.placed === i ? ' placed' : '') + (pv ? ' pvc' : ''), shield: !!c.shield, mark: view.marks[i] || (pv && pv.label) }); }
+    const blocked = G.board.blocked === i, sug = !!(G.onboard && G.suggest === i && !c && !blocked);
+    let h = `<div class="cell ${el && !blocked ? 'cell-' + el : ''} ${blocked ? 'blocked' : ''} ${sug ? 'sug' : ''} ${canAct() && !c && !isProv && !blocked ? 'ok' : ''}" data-cell="${i}" ${c ? `data-dg="cell:${i}"` : ''} ${sug ? `tabindex="0" role="button" aria-label="Cella suggerita ${cellLabel(i)}. Invio per piazzare la prima carta"` : blocked ? `role="img" aria-label="Cella ${cellLabel(i)} bloccata"` : ''}><span class="lbl">${cellLabel(i)}</span>`;
+    if (blocked) h += '<span class="wm">Bloccata</span>';
+    else if (c) { const pv = view.prov && view.pv ? view.pv[i] : null, o = (pv && pv.to) || view.owners[i] || c.owner; h += cardHTML(c.card, { owner: o, eff: d => effVal(G.board, i, d, G.rules), cls: (view.flash === i ? 'flipA' : view.pop === i ? 'pop' : '') + (view.placed === i ? ' placed' : '') + (pv ? ' pvc' : ''), shield: !!c.shield, mark: view.marks[i] || (pv && pv.label) }); }
     else if (isProv) { const card = G.hands.p[view.prov.hi]; h += `<div class="provw" data-dg="prov:${i}">${cardHTML(card, { owner: 'p', eff: d => previewVal(G.board, i, card, 'p', d, G.rules), cls: 'prov' })}</div><span class="badge">+${view.provN}</span>`; }
     else if (el) h += `<span class="wm">${EL_NAME[el]}</span>`;
     h += '</div>';
@@ -1176,6 +1281,7 @@ function renderBar() {
   let h = '';
   if (!canAct()) h = `<div class="hint">${isOver(G) ? '' : view.lock ? 'Risoluzione…' : 'Turno CPU…'}</div>`;
   else if (view.prov) h = `<div class="hint">Anteprima: ${view.provN ? '+' + view.provN + (view.provN === 1 ? ' cattura' : ' catture') : 'nessuna cattura'}. Trascina per spostarla o riportala in mano per annullare.</div><button class="primary" data-a="confirm">Concludi</button>`;
+  else if (G.onboard && G.suggest != null) h = `<div class="hint">Tocca la cella evidenziata, oppure trascina una carta.</div><button data-a="pass">${view.passConfirm ? 'Confermi? Salta' : 'Salta'}</button>`;
   else h = `<div class="hint">Trascina una carta sul tabellone. Tocca una carta per il dettaglio.</div><button data-a="pass">${view.passConfirm ? 'Confermi? Salta' : 'Salta'}</button>`;
   if (h === barKey) return; barKey = h; $('#bar').innerHTML = h;
 }
@@ -1193,19 +1299,39 @@ $('#bar').addEventListener('click', e => {
   if (b.dataset.a === 'pass') { if (!view.passConfirm) { view.passConfirm = true; renderBar(); setTimeout(() => { if (view.passConfirm) { view.passConfirm = false; if (G && screen === 'game') renderBar(); } }, 2500); return; } view.passConfirm = false; applyPass(G, 'p', meta()); toast('Passi il turno'); return startTurn(); }
   if (b.dataset.a === 'confirm') {
     const p = view.prov; view.prov = null; const res = applyPlace(G, 'p', p.hi, p.cell, meta());
+    if (!res || res.rejected) { renderAll(); return; }
     if (tut.on && tut.step === 2) tutStep(3);
     return animate(res, startTurn);
   }
 });
+function signed(n) { return n > 0 ? '+' + n : n < 0 ? '−' + (-n) : '0'; }
+let ribTm = 0;
+function showRib(dP, dC) {
+  const el = $('#rib'); if (!el) return;
+  const up = el.querySelector('[data-dp]'), dn = el.querySelector('[data-dc]');
+  up.className = dP > 0 ? 'up' : dP < 0 ? 'dn' : '';
+  dn.className = dC > 0 ? 'up' : dC < 0 ? 'dn' : '';
+  const paint = (a, b) => { up.textContent = 'TU ' + signed(a); dn.textContent = 'CPU ' + signed(b); };
+  paint(dP, dC);
+  el.hidden = false;
+  el.classList.remove('pop');
+  if (!REDUCE_MOTION) { void el.offsetWidth; el.classList.add('pop'); }
+  clearTimeout(ribTm); ribTm = setTimeout(() => { el.hidden = true; }, 1700);
+}
 function animate(res, cb) {
+  if (!res || res.rejected) { view.lock = false; renderAll(); return; }
   const g = G; view.lock = true;
   const base = g.board.cells.map(c => c ? c.owner : null);
   res.events.forEach(e => { if (e.from !== e.to) base[e.idx] = e.from; });
   view.owners = base; view.pop = res.cell; view.flash = null; view.marks = {}; view.placed = res.cell; renderAll();
-  let maxT = T.tail; const per = {}, said = {};
+  const pause = res && res.ribaltone && !REDUCE_MOTION ? 150 : 0;
+  if (res && res.ribaltone) showRib(res.dP, res.dC);
+  document.body.classList.toggle('hit', !!pause);
+  if (pause) setTimeout(() => { if (G === g) document.body.classList.remove('hit'); }, pause);
+  let maxT = pause + T.tail; const per = {}, said = {};
   res.events.forEach(e => {
     const k = per[e.depth] = (per[e.depth] || 0); per[e.depth]++;
-    const t = T.first + e.depth * T.depth + k * T.step; maxT = Math.max(maxT, t + T.tail);
+    const t = pause + T.first + e.depth * T.depth + k * T.step; maxT = Math.max(maxT, t + T.tail);
     setTimeout(() => {
       if (G !== g) return;
       if (e.from !== e.to) { view.owners[e.idx] = e.to; view.flash = e.idx; }
@@ -1217,16 +1343,16 @@ function animate(res, cb) {
       if (tut.on) tutExplain(e, res);
     }, t);
   });
-  setTimeout(() => { if (G !== g) return; view.lock = false; cb(); }, maxT);
+  setTimeout(() => { document.body.classList.remove('hit'); if (G !== g) return; view.lock = false; cb(); }, maxT);
 }
 
 // ---------- TUTORIAL ----------
 const TUT = {
-  1: 'Griglia 4×4, 4 valori per carta (rombi ai bordi): 1–9, poi A (10) … F (15). <b>Trascina una carta dalla mano su una cella.</b> Il piazzamento è provvisorio.',
+  1: 'Griglia 4×4. Ogni carta ha quattro numeri, uno per lato. <b>Trascina una carta dalla mano su una cella.</b> Il piazzamento è provvisorio.',
   2: 'Il badge <b>+N</b> dice quante carte catturi se confermi. Catturi un vicino nemico se il tuo valore sul lato di contatto è maggiore del suo. <b>Concludi</b> per confermare, oppure sposta la carta o riportala in mano.',
-  3: 'Ogni turno peschi 1 carta e ne piazzi 1. 8 turni a testa, passaggi illimitati (Salta). Same, Plus e Combo vengono spiegati quando capitano. Tocca qualunque carta per leggerne l\'effetto.',
+  3: 'Ogni turno peschi 1 carta e ne piazzi 1. I turni seguono Equilibrio turni; ogni passaggio (Salta) ne consuma uno. Same, Plus e Combo vengono spiegati quando capitano. Tocca qualunque carta per leggerne l\'effetto.',
 };
-function tutStep(n) { tut.step = n; $('#coach-skip').hidden = false; $('#coach').hidden = false; $('#coach-text').innerHTML = TUT[n]; $('#coach-next').hidden = n < 3; fit(); }
+function tutStep(n) { tut.step = n; $('#coach-skip').hidden = false; $('#coach-skip').textContent = 'Chiudi tutorial'; $('#coach').hidden = false; $('#coach-text').innerHTML = TUT[n]; $('#coach-next').hidden = n < 3; fit(); }
 function tutExplain(e, res) {
   if (e.from === e.to) return; const who = res.who === 'p' ? 'Hai catturato' : 'La CPU ha catturato', key = e.cause;
   if (tut.explained[key] || key === 'base') return; tut.explained[key] = true;
@@ -1234,35 +1360,59 @@ function tutExplain(e, res) {
     same: `${who} con <b>Same</b>: almeno due vicini avevano sul lato opposto lo stesso valore della carta piazzata.`,
     plus: `${who} con <b>Plus</b>: due coppie "mio lato + lato opposto" davano la stessa somma.`,
     combo: `<b>Combo</b>: una carta catturata con Same o Plus attacca a sua volta i vicini. La catena continua finché cattura.`,
-    steal: `<b>Scippo</b>: cattura il vicino più debole senza confronto.`, blocked: `<b>Corazza</b>: la prima cattura subita è annullata.`,
+    blocked: `<b>Corazza</b>: la prima cattura subita è annullata.`,
   }[key];
   if (msg) { $('#coach').hidden = false; $('#coach-text').innerHTML = msg; tut.step = 9; $('#coach-next').hidden = false; fit(); }
 }
 $('#coach-next').onclick = () => { $('#coach').hidden = true; fit(); };
-$('#coach-skip').onclick = () => { tut.on = false; ST.tutSeen = true; store.set('tutSeen', true); $('#coach').hidden = true; fit(); };
+$('#coach-skip').onclick = () => {
+  if (G && G.onboard) { store.set('onboard', 'done'); G = null; view.lock = true; $('#coach').hidden = true; show('home'); route(); return; }
+  tut.on = false; ST.tutSeen = true; store.set('tutSeen', true); $('#coach').hidden = true; fit();
+};
 
 // ---------- REGOLE / QUIT ----------
 $('#help').onclick = () => {
-  const r = G.rules, on = TOGGLES.filter(t => r[t.k] && !(t.dep && !t.dep(r)));
-  $('#rules-body').innerHTML = `<p><b>Base.</b> Piazzi una carta: per ogni carta nemica adiacente, se il tuo valore sul lato è maggiore del suo valore sul lato opposto, la catturi.</p>${on.map(t => `<p><b>${t.t}.</b> ${t.d}</p>`).join('')}${G.mission ? '<p><b>Obiettivo.</b> ' + esc(G.mission.goal) + '</p>' : ''}<p><b>Effetti.</b> Sempre attivi. Tocca una carta per leggere il suo.</p><p><b>Turni.</b> 3 carte iniziali, 1 pescata a inizio turno, 1 piazzamento (provvisorio finché non premi Concludi), passaggi illimitati (ogni passaggio consuma il turno). 8 turni ciascuno. La partita finisce anche se il tabellone è pieno. Vince chi ha più carte sul tabellone.</p><p><b>Indicatori.</b> ▲/▼ = valore in verde/rosso: modificato da elemento o aura. Anello azzurro = Corazza attiva. Etichetta TU/CPU = proprietario.</p>`;
+  const r = G.rules, on = TOGGLES.filter(t => t.k !== 'effects' && r[t.k] && !(t.dep && !t.dep(r)));
+  const eqLine = (G.onboard || G.mission) ? `Massimo ${capFor(G, 'p')} turni in questa partita.` : G.eq === 'vuota' ? EQ_HELP.vuota : G.eq === 'bloccata' ? EQ_HELP.bloccata : '8 piazzamenti a testa.';
+  $('#rules-body').innerHTML = `<p><b>Base.</b> Piazzi una carta: per ogni carta nemica adiacente, se il tuo valore sul lato è maggiore del suo valore sul lato opposto, la catturi.</p>${on.map(t => `<p><b>${t.t}.</b> ${t.d}</p>`).join('')}${G.mission ? '<p><b>Obiettivo.</b> ' + esc(G.mission.goal) + '</p>' : ''}<p><b>Effetti.</b> ${G.rules.effects === false ? 'Disattivati in questa partita. Il testo sulla carta resta leggibile.' : 'Attivi. Tocca una carta per leggere il suo.'}</p><p><b>Turni.</b> 3 carte iniziali, 1 pescata a inizio turno, 1 piazzamento (provvisorio finché non premi Concludi), passaggi illimitati (ogni passaggio consuma il turno). ${eqLine} La partita finisce anche se non restano celle libere. Vince chi ha più carte sul tabellone. I numeri sui lati sono decimali.</p><p><b>Indicatori.</b> ▲/▼ = valore in verde/rosso: modificato da elemento o aura. Anello azzurro = Corazza attiva. Etichetta TU/CPU = proprietario.</p>`;
   $('#rules').hidden = false;
 };
 $('#rules-close').onclick = () => { $('#rules').hidden = true; };
-$('#quit').onclick = () => { $('#rules').hidden = true; const mm = G && G.mission; G = null; view.lock = true; tut.on = false; $('#coach').hidden = true; show(mm ? 'camp' : 'play'); route(); };
+$('#quit').onclick = () => { $('#rules').hidden = true; const mm = G && G.mission, onboard = G && G.onboard; if (onboard) store.set('onboard', 'done'); G = null; view.lock = true; tut.on = false; $('#coach').hidden = true; $('#rib').hidden = true; document.body.classList.remove('hit'); show(mm ? 'camp' : 'play'); route(); };
 
 // ---------- FINE PARTITA ----------
 function gameStats(g) {
-  const s = { base: 0, same: 0, plus: 0, combo: 0, steal: 0, blocked: 0, maxDepth: 0, tAvg: null };
+  const s = { base: 0, same: 0, plus: 0, combo: 0, blocked: 0, maxDepth: 0, tAvg: null, firstCapMs: g.firstCapMs == null ? null : g.firstCapMs };
   const pm = g.moves.filter(m => m.who === 'p' && m.tMs != null); if (pm.length) s.tAvg = Math.round(pm.reduce((a, m) => a + m.tMs, 0) / pm.length);
-  g.moves.forEach(m => { m.flips.forEach(f => { s[f.cause]++; s.maxDepth = Math.max(s.maxDepth, f.depth); }); (m.fx || []).forEach(x => { if (x === 'blocked') s.blocked++; }); });
+  g.moves.forEach(m => { m.flips.forEach(f => { if (typeof s[f.cause] === 'number') s[f.cause]++; s.maxDepth = Math.max(s.maxDepth, f.depth); }); (m.fx || []).forEach(x => { if (x === 'blocked') s.blocked++; }); });
   return s;
+}
+function advText(d) { return d > 0 ? 'TU +' + d : d < 0 ? 'CPU +' + (-d) : 'pari'; }
+function bestSwing(g) {
+  let best = null;
+  (g.moves || []).forEach(m => {
+    if (m.pass || m.swing == null) return;
+    const mag = Math.abs(m.swing);
+    if (!best || mag > Math.abs(best.swing) || (mag === Math.abs(best.swing) && m.n >= best.n)) best = m;
+  });
+  return best;
+}
+function renderDecisive(g) {
+  const el = $('#decisive'), m = bestSwing(g);
+  if (!m) { el.hidden = true; el.innerHTML = ''; return; }
+  const who = m.who === 'p' ? 'Tu' : 'CPU';
+  const caps = m.caps ? `${m.caps} ${m.caps === 1 ? 'cattura' : 'catture'} · ` : '';
+  el.hidden = false;
+  el.innerHTML = `<h2 id="dec-h">Mossa decisiva</h2><p>Turno ${m.n} · ${who} · ${esc(m.cardName || 'carta')} · cella ${esc(m.cell || '–')}</p><p>${caps}vantaggio da ${advText(m.advBefore)} a ${advText(m.advAfter)}</p>`;
 }
 function endGame() {
   if (G.ended) return; G.ended = true;
   tut.on = false; ST.tutSeen = true; store.set('tutSeen', true); $('#coach').hidden = true;
   const p = score(G, 'p'), c = score(G, 'c'), mode = G.mode;
-  const rec = { v: 8, ts: new Date().toISOString(), mode, cpu: G.lvl, rules: { same: G.rules.same, plus: G.rules.plus, combo: G.rules.combo, elemental: G.rules.elemental }, first: G.first, result: { p, c }, deckPower: G.power, decks: G.deckIds, elementCells: G.board.elem.map((e, i) => e ? cellLabel(i) + ':' + e : null).filter(Boolean), moves: G.moves, stats: gameStats(G) };
-  lastRecord = rec; if (mode !== 'tutorial' && !G.mission) { ST.session.push(rec); store.set('session', ST.session); }
+  const rec = { v: 9, ts: new Date().toISOString(), mode, cpu: G.lvl, rules: { same: G.rules.same, plus: G.rules.plus, combo: G.rules.combo, elemental: G.rules.elemental, effects: G.rules.effects !== false }, equilibrio: G.eq || 'off', first: G.first, result: { p, c }, firstCapMs: G.firstCapMs == null ? null : G.firstCapMs, deckPower: G.power, decks: G.deckIds, elementCells: G.board.elem.map((e, i) => e ? cellLabel(i) + ':' + e : null).filter(Boolean), moves: G.moves, stats: gameStats(G) };
+  lastRecord = rec; if (mode !== 'tutorial' && mode !== 'onboard' && !G.mission) { ST.session.push(rec); store.set('session', ST.session); }
+  if (mode === 'onboard') store.set('onboard', 'done');
+  $('#rib').hidden = true; document.body.classList.remove('hit');
   const gain = []; let prog = null;
   if (!G.mission && (mode === 'deck' || mode === 'draft')) {
     const win = p > c, add = win ? WIN_PTS : LOSS_PTS; ST.prog.games++; if (win) ST.prog.wins++;
@@ -1270,19 +1420,23 @@ function endGame() {
     else { ST.prog.pts += add; while (ST.prog.pts >= PTS_NEED && LOCKED().length) { ST.prog.pts -= PTS_NEED; gain.push(unlockCard()); } if (!LOCKED().length) ST.prog.pts = 0; prog = { add, pts: ST.prog.pts, full: !LOCKED().length }; }
     saveProg();
   }
-  let mres = null; if (G.mission) { const ev = evalObjective(G, G.mission.objective || []), win = p > c; mres = { ev, win, ok: win && ev.every(x => x.ok) }; if (mres.ok) gain.push(...completeMission(G.mission.id)); }
+  let mres = null; if (G.mission) { const ev = evalObjective(G, G.mission.objective || []), win = p > c; mres = { ev, win, ok: win && ev.every(x => x.ok) }; if (mres.ok) { const got = completeMission(G.mission.id); gain.push(...got.cards); mres.full = got.full; } }
   const r = mres ? (mres.ok ? ['MISSIONE SUPERATA', 'w'] : mres.win ? ['VITTORIA NON VALIDA', 'd'] : p < c ? ['SCONFITTA', 'l'] : ['PAREGGIO', 'd']) : p > c ? ['VITTORIA', 'w'] : p < c ? ['SCONFITTA', 'l'] : ['PAREGGIO', 'd'];
   $('#e-score').textContent = `${p} – ${c}`; $('#res').textContent = r[0]; $('#res').className = 'res ' + r[1];
-  $('#resdet').textContent = mres ? `Missione ${G.mission.id} · ${G.mission.title} · ` + mres.ev.map(x => (x.ok ? '✓ ' : '✗ ') + x.label).join(' · ') : `${mode === 'draft' ? 'Draft' : mode === 'tutorial' ? 'Tutorial' : 'Mazzo'} · CPU ${G.lvl} · primo a muovere: ${G.first === 'p' ? 'tu' : 'CPU'} · potenza mazzi ${G.power.p} / ${G.power.c}`;
+  const eqBit = G.eq === 'vuota' ? ' · cella vuota' : G.eq === 'bloccata' ? ' · cella bloccata' : G.eq === 'off' && mode !== 'onboard' && !G.mission ? ' · equilibrio spento' : '';
+  $('#resdet').textContent = G.onboard ? 'Introduzione · solo cattura base. Same, Plus, Combo ed effetti si sbloccano nei capitoli della Campagna, e puoi attivarli da Gioca.' : mres ? `Missione ${G.mission.id} · ${G.mission.title} · ` + mres.ev.map(x => (x.ok ? '✓ ' : '✗ ') + x.label).join(' · ') : `${mode === 'draft' ? 'Draft' : mode === 'tutorial' ? 'Tutorial' : 'Mazzo'} · CPU ${G.lvl} · primo a muovere: ${G.first === 'p' ? 'tu' : 'CPU'} · potenza mazzi ${G.power.p} / ${G.power.c}${eqBit}`;
   const s = rec.stats;
-  $('#gstats').innerHTML = `<tr><th>Catture</th><th>Base</th><th>Same</th><th>Plus</th><th>Combo</th><th>Scippo</th></tr><tr><td></td><td>${s.base}</td><td>${s.same}</td><td>${s.plus}</td><td>${s.combo}</td><td>${s.steal}</td></tr><tr><td>Corazza / profondità max</td><td colspan="5">${s.blocked} / ${s.maxDepth}</td></tr><tr><td>Tempo medio di decisione</td><td colspan="5">${s.tAvg == null ? '–' : (s.tAvg / 1000).toFixed(1) + 's'}</td></tr>`;
+  const capTxt = s.firstCapMs == null ? '–' : (s.firstCapMs / 1000).toFixed(1) + ' s';
+  $('#gstats').innerHTML = `<tr><th>Catture</th><th>Base</th><th>Same</th><th>Plus</th><th>Combo</th></tr><tr><td></td><td>${s.base}</td><td>${s.same}</td><td>${s.plus}</td><td>${s.combo}</td></tr><tr><td>Corazza / profondità max</td><td colspan="4">${s.blocked} / ${s.maxDepth}</td></tr><tr><td>Tempo medio di decisione</td><td colspan="4">${s.tAvg == null ? '–' : (s.tAvg / 1000).toFixed(1) + 's'}</td></tr><tr><td>Tempo alla prima cattura</td><td colspan="4">${capTxt}</td></tr>`;
+  renderDecisive(G);
   const n = ST.session.length; $('#sessinfo').textContent = n ? `Sessione salvata su questo dispositivo: ${n} partite · ${ST.session.filter(g => g.result.p > g.result.c).length} vinte.` : 'Nessuna partita salvata.';
-  renderReward(gain, prog, !!G.mission);
+  renderReward(gain, prog, !!G.mission, !!(mres && mres.full));
   show('end');
 }
-function renderReward(gain, prog, isMission) {
+function renderReward(gain, prog, isMission, fullChapter) {
   const el = $('#reward'); let h = '';
-  gain.forEach(c => { h += `<div><b>Nuova carta sbloccata!</b><div class="nc">${cardHTML(c)}</div><div>${esc(c.name)} · ${RAR_NAME[c.rarity]}</div></div>`; });
+  gain.forEach(c => { if (c) h += `<div><b>Nuova carta sbloccata!</b><div class="nc">${cardHTML(c)}</div><div>${esc(c.name)} · ${RAR_NAME[c.rarity]}</div></div>`; });
+  if (fullChapter) h += '<div><b>Collezione completa: capitolo completato</b></div>';
   if (prog) {
     if (prog.full) h += '<div>Collezione completa: hai sbloccato tutte le carte.</div>';
     else h += `<div>${prog.add === WIN_PTS ? 'Vittoria: +' : 'Partita giocata: +'}${prog.add} punti</div><div class="bar"><i style="width:${Math.round(100 * prog.pts / PTS_NEED)}%"></i></div><div>${prog.pts}/${PTS_NEED} punti per la prossima carta · ne mancano ${PTS_NEED - prog.pts}</div><small class="note">Vittoria = 2 punti, sconfitta o pareggio = 1.</small>`;
@@ -1296,7 +1450,7 @@ function copyText(text) {
 $('#copy1').onclick = () => copyText(JSON.stringify(lastRecord));
 $('#copyAll').onclick = () => copyText(JSON.stringify(ST.session));
 $('#clearSess').onclick = () => { if ($('#clearSess').dataset.arm) { ST.session.length = 0; store.set('session', ST.session); $('#clearSess').dataset.arm = ''; $('#clearSess').textContent = 'Cancella sessione salvata'; $('#sessinfo').textContent = 'Sessione cancellata.'; } else { $('#clearSess').dataset.arm = 1; $('#clearSess').textContent = 'Tocca ancora per confermare'; } };
-$('#again').onclick = () => { if (G && G.mission) startMission(G.mission); else if (lastMode === 'draft') startDraft(); else if (lastMode === 'tutorial') startTutorial(); else startFromDeck(); };
+$('#again').onclick = () => { if (G && G.onboard) startOnboarding(); else if (G && G.mission) startMission(G.mission); else if (lastMode === 'draft') startDraft(); else if (lastMode === 'tutorial') startTutorial(); else startFromDeck(); };
 $('#menu').onclick = () => backFromGame();
 
 // ---------- ingressi ----------
@@ -1353,7 +1507,7 @@ function validateRaw(raw) {
     if (!RARITIES.includes(rar)) errs.push(L + 'rarità non valida (' + rar + ').');
     if (el !== 'none' && !ELEMENTS.includes(el)) errs.push(L + 'elemento non valido (' + el + ').');
     [n, e, s, w].forEach(v => { if (!Number.isInteger(v) || v < 1 || v > MAX_V) errs.push(L + 'valore lato fuori da 1–' + MAX_V + '.'); });
-    if (rar !== 'legendary' && [n, e, s, w].some(v => v > 9)) errs.push(L + 'valori A+ ammessi solo sulle Leggendarie.');
+    if (rar !== 'legendary' && [n, e, s, w].some(v => v > 9)) errs.push(L + 'valori sopra 9 ammessi solo sulle Leggendarie.');
     const p = parseEffect(fx); p.unknown.forEach(u => errs.push(L + 'effetto non riconosciuto: "' + u + '".'));
   });
   const cnt = k => raw.filter(r => r[2] === k).length;
@@ -1434,12 +1588,26 @@ $('#c-claude').onclick = async () => {
 
 // ---------- CAMPAGNA (UI) ----------
 function catchUpRewards() { [...new Set(MISSIONS.map(m => m.ch))].forEach(ch => { if (!ST.camp.rewarded[ch] && MISSIONS.filter(m => m.ch === ch).every(m => ST.camp.done[m.id])) { const c = unlockCard(); ST.camp.rewarded[ch] = c ? true : 'full'; } }); store.set('camp', ST.camp); }
+function chReward(rw) {
+  if (rw === true) return 'carta ottenuta ✓';
+  if (rw === 'full' || !LOCKED().length) return 'collezione completa';
+  return '1 carta';
+}
 function completeMission(id) {
-  ST.camp.done[id] = true; const gain = [];
-  if (MISSIONS.every(m => ST.camp.done[m.id])) ST.camp.complete = true;
   const ch = MISSIONS.find(m => m.id === id).ch;
-  if (!ST.camp.rewarded[ch] && MISSIONS.filter(m => m.ch === ch).every(m => ST.camp.done[m.id])) { const c = unlockCard(); ST.camp.rewarded[ch] = c ? true : 'full'; if (c) gain.push(c); }
-  store.set('camp', ST.camp); return gain;
+  const chapterWasOpen = MISSIONS.some(m => m.ch === ch && !ST.camp.done[m.id]);
+  ST.camp.done[id] = true; const gain = [];
+  let full = false;
+  if (MISSIONS.every(m => ST.camp.done[m.id])) ST.camp.complete = true;
+  const chapterDone = MISSIONS.filter(m => m.ch === ch).every(m => ST.camp.done[m.id]);
+  if (chapterWasOpen && chapterDone && CHAPTER_RULE[ch]) { ST.rules[CHAPTER_RULE[ch]] = true; saveST(); }
+  if (!ST.camp.rewarded[ch] && chapterDone) {
+    const c = unlockCard();
+    ST.camp.rewarded[ch] = c ? true : 'full';
+    if (c) gain.push(c);
+    if (!LOCKED().length) full = true;
+  }
+  store.set('camp', ST.camp); return { cards: gain, full };
 }
 function missionIntro(m) {
   $('#coach').hidden = false; $('#coach-skip').hidden = true; $('#coach-next').hidden = false;
@@ -1449,7 +1617,7 @@ function startMission(m) {
   if (m.type === 'puzzle') {
     lastMode = 'camp'; tut.on = false; lvl = 'media'; G = newMissionGame(m); prevHandN = 0; handKey = '';
     Object.assign(view, { owners: Array(CELLS).fill(null), lock: false, prov: null, passConfirm: false, flash: null, pop: null, marks: {}, placed: null });
-    show('game'); $('#strip').textContent = ''; missionIntro(m); startTurn();
+    show('game'); $('#strip').textContent = ''; $('#rib').hidden = true; G.startedAt = Date.now(); missionIntro(m); startTurn();
   } else if (m.src === 'draft') startDraft({ rules: m.rules, lvl: m.lvl, mission: m });
   else {
     const d = deckCards(curDeck()), ok = deckCheck(d).ok;
@@ -1462,10 +1630,11 @@ function renderCamp() {
   const done = ST.camp.done, n = MISSIONS.filter(m => done[m.id]).length;
   const chs = [...new Set(MISSIONS.map(m => m.ch))];
   if (!campOpen) { const first = chs.find(c => !MISSIONS.filter(m => m.ch === c).every(m => done[m.id])); campOpen = new Set(first ? [first] : []); }
-  let h = `<p class="note">La campagna è un tutorial: non è obbligatoria per giocare contro la CPU. Ogni missione si supera vincendo <b>usando</b> la regola che insegna. Completando un capitolo ottieni 1 carta. Progresso: ${n}/${MISSIONS.length}.</p>`;
+  const rewardLine = LOCKED().length ? 'Completando un capitolo ottieni 1 carta.' : 'Collezione completa: i capitoli non aggiungono carte.';
+  let h = `<p class="note">La campagna è un tutorial: non è obbligatoria per giocare contro la CPU. Ogni missione si supera vincendo <b>usando</b> la regola che insegna. ${rewardLine} Progresso: ${n}/${MISSIONS.length}.</p>`;
   chs.forEach(ch => {
     const ms = MISSIONS.filter(m => m.ch === ch), nd = ms.filter(m => done[m.id]).length, rw = ST.camp.rewarded[ch];
-    h += `<details class="acc ${nd === ms.length ? 'complete' : ''}" data-ch="${esc(ch)}" ${campOpen.has(ch) ? 'open' : ''}><summary><span class="at">${esc(ch)}</span><span class="ai">${nd}/${ms.length} · ${rw === 'full' ? 'completato' : rw ? 'carta ottenuta ✓' : '1 carta'}</span></summary><div class="ab">`;
+    h += `<details class="acc ${nd === ms.length ? 'complete' : ''}" data-ch="${esc(ch)}" ${campOpen.has(ch) ? 'open' : ''}><summary><span class="at">${esc(ch)}</span><span class="ai">${nd}/${ms.length} · ${chReward(rw)}</span></summary><div class="ab">`;
     ms.forEach(m => {
       const i = MISSIONS.indexOf(m), open = i === 0 || done[MISSIONS[i - 1].id] || done[m.id];
       h += `<div class="mrow2"><span><b>${m.id}</b> ${esc(m.title)}<br><small class="note" style="margin:0">${esc(m.teach)}</small></span><button class="mini ${done[m.id] ? '' : open ? 'primary' : ''}" data-ms="${m.id}" ${open ? '' : 'disabled'}>${done[m.id] ? 'Rigioca ✓' : open ? 'Gioca' : 'Bloccata'}</button></div>`;
@@ -1479,8 +1648,61 @@ $('#camp').addEventListener('click', e => {
   const b = e.target.closest('[data-ms]'); if (b) return startMission(MISSIONS.find(m => m.id === b.dataset.ms));
 });
 
+// ---------- prima partita guidata ----------
+function focusSuggest() {
+  if (!G || !G.onboard || G.suggest == null || view.prov) return;
+  const el = document.querySelector(`#board [data-cell="${G.suggest}"]`);
+  if (el) el.focus();
+}
+function placeSuggested() {
+  if (!G || !G.onboard || G.suggest == null || !canAct() || view.prov || !G.hands.p.length) return;
+  const cell = G.suggest;
+  const res = applyPlace(G, 'p', 0, cell, meta());
+  if (!res || res.rejected) return;
+  animate(res, startTurn);
+}
+function withIcon(card, icon) { card.icon = icon; return card; }
+function newOnboardingGame() {
+  const rules = { same: false, plus: false, combo: false, comboBase: false, maxDepth: 99, diagonals: false, spDiagonals: false, elemental: false, effects: false };
+  const board = { cells: Array(CELLS).fill(null), elem: Array(CELLS).fill(null), blocked: null };
+  board.cells[IDX('C2')] = mkInst(withIcon(syn('Sentinella', 2, 2, 2, 2), 'shield'), 'c');
+  const hand = [withIcon(syn('Recluta', 6, 6, 4, 4), 'star'), withIcon(syn('Vedetta', 5, 6, 4, 4), 'wind'), withIcon(syn('Staffetta', 4, 6, 3, 4), 'feather')];
+  const deck = [withIcon(syn('Rincalzo', 5, 5, 4, 4), 'dice'), withIcon(syn('Rincalzo', 4, 5, 4, 4), 'dice'), withIcon(syn('Rincalzo', 4, 4, 4, 4), 'key')];
+  const cpuHand = [withIcon(syn('Pattuglia', 2, 2, 2, 2), 'key'), withIcon(syn('Pattuglia', 2, 2, 2, 2), 'key'), withIcon(syn('Pattuglia', 3, 2, 2, 2), 'key')];
+  const cpuDeck = [withIcon(syn('Pattuglia', 2, 2, 2, 2), 'dice'), withIcon(syn('Pattuglia', 2, 3, 2, 2), 'dice'), withIcon(syn('Pattuglia', 2, 2, 3, 2), 'dice')];
+  return {
+    rules, first: 'p', current: 'p', board, decks: { p: deck, c: cpuDeck }, hands: { p: hand, c: cpuHand },
+    deckIds: { p: [], c: [] }, power: { p: 0, c: 0 }, turnsUsed: { p: 0, c: 0 }, turnNo: 0, moves: [],
+    maxTurns: 3, mission: null, script: [{ hi: 0, cell: 'A4' }, { hi: 0, cell: 'D1' }, { hi: 0, cell: 'D4' }],
+    mode: 'onboard', lvl: 'facile', onboard: true, suggest: IDX('B2'), eq: 'off', startedAt: Date.now(),
+  };
+}
+function startOnboarding() {
+  store.set('onboard', 'pending');
+  lastMode = 'onboard'; tut.on = false; lvl = 'facile';
+  G = newOnboardingGame(); prevHandN = 0; handKey = ''; barKey = '';
+  Object.assign(view, { owners: Array(CELLS).fill(null), lock: false, prov: null, passConfirm: false, flash: null, pop: null, marks: {}, placed: null });
+  show('game'); $('#strip').textContent = ''; $('#rib').hidden = true;
+  $('#coach').hidden = false; $('#coach-skip').hidden = false; $('#coach-skip').textContent = 'Salta introduzione'; $('#coach-next').hidden = true;
+  $('#coach-text').textContent = 'Piazza una carta: se il tuo numero è più alto, la catturi.';
+  startTurn();
+}
+$('#board').addEventListener('click', e => {
+  const cell = e.target.closest('[data-cell]');
+  if (!cell || !G || !G.onboard || G.suggest == null) return;
+  if (+cell.dataset.cell === G.suggest) placeSuggested();
+});
+$('#board').addEventListener('keydown', e => {
+  const cell = e.target.closest('[data-cell]');
+  if (!cell || !G || !G.onboard || (e.key !== 'Enter' && e.key !== ' ')) return;
+  if (+cell.dataset.cell === G.suggest) { e.preventDefault(); placeSuggested(); }
+});
+
 // ---------- init ----------
-catchUpRewards(); sanitizeDecks(); show('home'); renderHome();
+catchUpRewards(); sanitizeDecks();
+if (window.cowork && typeof window.cowork.askClaude === 'function') $('#c-claude').hidden = false;
+if (FIRST_LAUNCH || store.get('onboard', null) === 'pending') startOnboarding();
+else { show('home'); renderHome(); }
 </script>
 </body>
 </html>
