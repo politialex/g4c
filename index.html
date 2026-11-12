@@ -87,7 +87,6 @@ select{font:600 14px var(--serif);color:var(--parch);background:#08141f;border:1
 .row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;color:var(--parch2)}
 .row b{color:#fff}
 .seg{display:flex;gap:8px}.seg button{flex:1;min-height:44px}
-.seg.eq{flex-wrap:wrap}.seg.eq button{flex:1 1 30%;font-size:12.5px;letter-spacing:.04em;padding:0 8px}
 .tg{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line2);cursor:pointer}
 .tg .t{flex:1}.tg b{display:block;font:700 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:#fff}.tg small{color:var(--parch2);font-size:13px}
 .tg.off{opacity:.45;cursor:default}
@@ -210,7 +209,6 @@ section:not([hidden]):not(#s-game){animation:scrIn .38s var(--spring)}@keyframes
 .cell{aspect-ratio:5/7;position:relative;border:1px solid rgba(63,230,255,.22);background:linear-gradient(180deg,#081423,#050b14);overflow:hidden}
 .cell.ok{border-color:var(--cy);background:linear-gradient(180deg,#0b2236,#071624)}
 .cell.sug{border-color:var(--am);box-shadow:inset 0 0 0 2px var(--am)}.cell.sug .lbl{color:var(--am2)}
-.cell.blocked{border-color:var(--am);cursor:default;background:repeating-linear-gradient(-45deg,rgba(255,176,32,.14) 0 6px,transparent 6px 12px),linear-gradient(180deg,#081423,#050b14)}.cell.blocked .wm{color:var(--am2);opacity:1}
 .cell .lbl{position:absolute;left:3px;top:2px;font:600 12px var(--disp);letter-spacing:.06em;color:rgba(155,200,220,.6)}
 .cell .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 12px var(--disp);letter-spacing:.06em;text-transform:uppercase;opacity:.75}
 .cell-fire{border-color:var(--fire)}.cell-water{border-color:var(--water)}.cell-earth{border-color:var(--earth)}.cell-wind{border-color:var(--wind)}.cell-light{border-color:var(--light)}.cell-shadow{border-color:var(--shadow)}
@@ -280,11 +278,6 @@ body.hit #board{filter:brightness(1.5) saturate(1.2)}
     <div class="row"><span>Mazzo</span><span><b id="deck-name"></b> <button id="deck-change" class="mini">Cambia</button></span></div>
     <div class="row" style="flex-direction:column;align-items:stretch"><span>Difficoltà</span><div class="seg" id="seg-level"></div></div>
     <div id="toggles"></div>
-    <div class="row" style="flex-direction:column;align-items:stretch;gap:8px">
-      <span id="eq-label">Equilibrio turni</span>
-      <div class="seg eq" id="seg-eq" role="radiogroup" aria-labelledby="eq-label"></div>
-      <p class="note" id="eq-note" style="margin:0"></p>
-    </div>
   </div>
   <div class="stack">
     <button id="go-draft" class="big">Draft mode<small>5 round: scegli 1 carta da una coppia, l'altra va alla CPU; la CPU fa lo stesso in contemporanea e il suo scarto va a te. Mazzo finale da 10.</small></button>
@@ -439,11 +432,11 @@ const isCorner = i => i === 0 || i === 3 || i === 12 || i === 15;
 function newBoard(rules, rng) {
   const elem = Array(CELLS).fill(null);
   if (rules.elemental) { shuffle([...Array(CELLS).keys()], rng).slice(0, 4).forEach(i => { elem[i] = ELEMENTS[Math.floor(rng() * ELEMENTS.length)]; }); }
-  return { cells: Array(CELLS).fill(null), elem, blocked: null };
+  return { cells: Array(CELLS).fill(null), elem };
 }
 const mkInst = (card, owner) => ({ card, owner, shield: card.fx.some(f => f.t === 'shield'), perm: { n: 0, e: 0, s: 0, w: 0 }, tm: 0, tms: { n: 0, e: 0, s: 0, w: 0 }, caps: {}, sw: false });
 const cloneInst = c => c && { card: c.card, owner: c.owner, shield: c.shield, perm: Object.assign({}, c.perm), tm: c.tm, tms: Object.assign({}, c.tms), caps: Object.assign({}, c.caps), sw: c.sw };
-const cloneBoard = b => ({ cells: b.cells.map(cloneInst), elem: b.elem.slice(), blocked: b.blocked == null ? null : b.blocked });
+const cloneBoard = b => ({ cells: b.cells.map(cloneInst), elem: b.elem.slice() });
 const baseSide = (c, d) => c.sw ? c.card[OPP[d]] : c.card[d];
 function auraMod(board, idx, dir) {
   const me = board.cells[idx]; let m = 0;
@@ -489,7 +482,6 @@ const extremeSide = (board, i, rules, mode) => { let best = null; SIDE_DIRS.forE
 
 // ---------- risoluzione piazzamento (muta il board, restituisce eventi) ----------
 function resolve(board, idx, card, owner, rules, ctx) {
-  if (board.blocked === idx) return [];
   const inst = mkInst(card, owner); board.cells[idx] = inst;
   const events = [], flipped = new Set(), seeds = [];
   const push = (e) => events.push(Object.assign({ depth: 0 }, e));
@@ -573,10 +565,9 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 function shuffle(a, rng) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const deckPower = d => d.reduce((s, c) => s + sidePower(c), 0);
 const other = w => (w === 'p' ? 'c' : 'p');
-const capFor = (G, w) => (G.turnCap && G.turnCap[w] != null) ? G.turnCap[w] : (G.maxTurns || MAX_TURNS);
-const boardFull = G => { for (let i = 0; i < CELLS; i++) if (!G.board.cells[i] && G.board.blocked !== i) return false; return true; };
-const isOver = G => (G.turnsUsed.p >= capFor(G, 'p') && G.turnsUsed.c >= capFor(G, 'c')) || boardFull(G);
-const emptyCells = G => G.board.cells.map((c, i) => (c || G.board.blocked === i) ? -1 : i).filter(i => i >= 0);
+const maxT = G => G.maxTurns || MAX_TURNS;
+const isOver = G => (G.turnsUsed.p >= maxT(G) && G.turnsUsed.c >= maxT(G)) || G.board.cells.every(c => c);
+const emptyCells = G => G.board.cells.map((c, i) => c ? -1 : i).filter(i => i >= 0);
 const score = (G, w) => G.board.cells.filter(c => c && c.owner === w).length;
 function beginTurn(G) {
   const w = G.current; G.turnNo++;
@@ -609,7 +600,7 @@ function stampMove(G, who, card, bP, bC, events) {
   return { ribaltone, dP: aP - bP, dC: aC - bC, caps: capsN };
 }
 function applyPlace(G, who, handIdx, cell, meta) {
-  if (G.board.blocked === cell || G.board.cells[cell]) return { card: null, cell, events: [], who, ribaltone: false, dP: 0, dC: 0, caps: 0, rejected: true };
+  if (G.board.cells[cell]) return { card: null, cell, events: [], who, ribaltone: false, dP: 0, dC: 0, caps: 0, rejected: true };
   const bP = score(G, 'p'), bC = score(G, 'c');
   const card = G.hands[who].splice(handIdx, 1)[0];
   const events = resolve(G.board, cell, card, who, G.rules, G);
@@ -631,7 +622,7 @@ let SIDE_VALUES = POOL.flatMap(c => SIDE_DIRS.map(d => c[d]));
 const pGreater = v => SIDE_VALUES.filter(x => x > v).length / SIDE_VALUES.length;
 function exposure(board, owner, rules) {
   let s = 0;
-  board.cells.forEach((c, i) => { if (!c || c.owner !== owner) return; for (const d of SIDE_DIRS) { const ni = neighbor(i, d); if (ni >= 0 && !board.cells[ni] && board.blocked !== ni) s += pGreater(effVal(board, i, d, rules)); } });
+  board.cells.forEach((c, i) => { if (!c || c.owner !== owner) return; for (const d of SIDE_DIRS) { const ni = neighbor(i, d); if (ni >= 0 && !board.cells[ni]) s += pGreater(effVal(board, i, d, rules)); } });
   return s;
 }
 function cpuChoose(G, level) {
@@ -679,35 +670,35 @@ const MISSIONS = [
   { id: '1.4', ch: '1 Fondamenti', title: 'Prima partita', teach: 'Partita completa a regole base', type: 'full', rules: { same: false, plus: false, combo: false, elemental: false }, lvl: 'facile', src: 'deck',
     intro: 'Partita completa: 3 carte in mano, 1 pescata a inizio turno, 8 turni a testa. Vince chi ha più carte sul tabellone.',
     goal: 'Vinci una partita completa contro la CPU facile.', objective: [] },
-  { id: '2.1', ch: '2 Same', title: 'Valori uguali', teach: 'Same', type: 'puzzle', rules: { same: true }, maxTurns: 1,
-    intro: 'Same: se almeno 2 vicini hanno sul lato opposto lo stesso valore del tuo lato, li catturi tutti. Il confronto base qui non basta: i valori sono uguali, non maggiori.',
+  { id: '2.1', ch: '6 Same', title: 'Valori uguali', teach: 'Same', type: 'puzzle', rules: { same: true }, maxTurns: 1,
+    intro: 'Same è una regola avanzata. Plus conta le somme; qui conta il valore uguale. Se almeno 2 vicini hanno sul lato opposto lo stesso valore del tuo lato, li catturi tutti. Il confronto base non basta: i valori sono uguali, non maggiori.',
     goal: 'Cattura almeno 1 carta con Same.', objective: [{ t: 'cap', cause: 'same', n: 1, label: 'cattura Same ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 7, 3)], ['A2', 'c', syn('Nemica O', 3, 4, 3, 3)]], hand: [syn('Gemella', 7, 2, 2, 4), syn('Robusta', 5, 5, 5, 5)] }) },
-  { id: '3.1', ch: '3 Plus', title: 'Somme uguali', teach: 'Plus', type: 'puzzle', rules: { plus: true }, maxTurns: 1,
+  { id: '3.1', ch: '2 Plus', title: 'Somme uguali', teach: 'Plus', type: 'puzzle', rules: { plus: true }, maxTurns: 1,
     intro: 'Plus: se almeno 2 coppie (tuo lato + lato opposto del vicino) danno la stessa somma, catturi i vicini del gruppo.',
     goal: 'Cattura almeno 1 carta con Plus.', objective: [{ t: 'cap', cause: 'plus', n: 1, label: 'cattura Plus ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 6, 3)], ['A2', 'c', syn('Nemica O', 3, 7, 3, 3)]], hand: [syn('Somma', 3, 2, 2, 2), syn('Robusta', 5, 5, 5, 5)] }) },
-  { id: '4.1', ch: '4 Combo', title: 'Reazione a catena', teach: 'Combo', type: 'puzzle', rules: { same: true, combo: true }, maxTurns: 1,
-    intro: 'Combo: le carte catturate con Same o Plus attaccano a loro volta i vicini, in catena. Si attiva solo se Same o Plus è attiva.',
+  { id: '4.1', ch: '6 Same', title: 'Reazione a catena', teach: 'Combo da Same', type: 'puzzle', rules: { same: true, combo: true }, maxTurns: 1,
+    intro: 'La Combo la conosci già: una carta catturata con Plus attacca i vicini. Anche Same può avviare la catena. Qui i valori sono uguali, non maggiori: la cattura Same fa reagire la carta catturata.',
     goal: 'Cattura almeno 1 carta per Combo.', objective: [{ t: 'cap', cause: 'combo', n: 1, label: 'cattura Combo ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 7, 3)], ['A2', 'c', syn('Nemica O', 6, 4, 8, 3)], ['A3', 'c', syn('Nemica lontana', 5, 3, 3, 3)]], hand: [syn('Gemella', 7, 2, 2, 4), syn('Robusta', 5, 5, 5, 5)] }) },
-  { id: '5.1', ch: '5 Elementi', title: 'Cella elementale', teach: 'Elementi', type: 'puzzle', rules: { elemental: true }, maxTurns: 1,
+  { id: '5.1', ch: '4 Elementi', title: 'Cella elementale', teach: 'Elementi', type: 'puzzle', rules: { elemental: true }, maxTurns: 1,
     intro: 'Con Elementi alcune celle hanno un elemento: una carta dello stesso elemento ha +1 su tutti i lati, una di elemento diverso (o Neutra) ha −1.',
     goal: 'Cattura 1 carta grazie al +1 della cella.', objective: [{ t: 'cap', cause: 'base', n: 1, label: 'cattura base ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica', 3, 3, 6, 3)]], elem: { B2: 'fire', D4: 'water' }, hand: [syn('Brace', 6, 2, 2, 2, 'fire'), syn('Onda', 6, 2, 2, 2, 'water')] }) },
-  { id: '6.1', ch: '6 Effetti', title: 'Effetto alla giocata', teach: 'Giocata', type: 'puzzle', rules: {}, maxTurns: 1,
+  { id: '6.1', ch: '5 Effetti', title: 'Effetto alla giocata', teach: 'Giocata', type: 'puzzle', rules: {}, maxTurns: 1,
     intro: 'Tempesta ha "Giocata: −1 a tutti i lati delle nemiche adiacenti fino a fine turno". Tocca la carta per leggere l\'effetto. Tutti i lati della nemica sono pari ai tuoi: serve l\'effetto.',
     goal: 'Cattura 1 carta usando l\'effetto di Tempesta.', objective: [{ t: 'cap', cause: 'base', n: 1, label: 'cattura base ≥ 1' }, { t: 'fx', cause: 'debuff', n: 1, label: 'effetto di Tempesta attivato' }],
     build: () => { const I = cByName('Indra'); return { board: [['B1', 'c', syn('Nemica', 3, I.w, I.n, I.e)]], hand: [cByName('Indra'), syn('Recluta', 1, 1, 1, 1)] }; } },
-  { id: '6.2', ch: '6 Effetti', title: 'Aura', teach: 'Aura', type: 'puzzle', rules: {}, maxTurns: 1,
+  { id: '6.2', ch: '5 Effetti', title: 'Aura', teach: 'Aura', type: 'puzzle', rules: {}, maxTurns: 1,
     intro: 'Corvo ha un\'Aura: finché è sul tabellone, il lato delle nemiche adiacenti rivolto verso di lei ha −1. L\'aura vale in modo continuo, non solo alla giocata.',
     goal: 'Cattura 1 carta sfruttando l\'aura di Corvo.', objective: [{ t: 'cap', cause: 'base', n: 1, label: 'cattura base ≥ 1' }],
     build: () => { const M = cByName('Morrigan'); return { board: [['B1', 'c', syn('Nemica', 3, M.w, M.n, M.e)]], hand: [cByName('Morrigan'), syn('Recluta', 1, 1, 1, 1)] }; } },
-  { id: '6.3', ch: '6 Effetti', title: 'Corazza', teach: 'Corazza', type: 'puzzle', rules: {}, maxTurns: 1,
+  { id: '6.3', ch: '5 Effetti', title: 'Corazza', teach: 'Corazza', type: 'puzzle', rules: {}, maxTurns: 1,
     intro: 'Scudo ha Corazza: la prima cattura che subisce viene annullata, poi la corazza si rompe. Gioca una carta e lascia che la CPU attacchi Scudo.',
     goal: 'Fai resistere Scudo a una cattura e vinci.', objective: [{ t: 'fx', cause: 'blocked', n: 1, label: 'Corazza consumata' }],
     build: () => ({ board: [['B2', 'p', cByName('Heimdall')]], hand: [syn('Recluta', 4, 4, 4, 4)], cpuHand: [syn('Assalitrice', 9, 9, 9, 9)], script: [{ hi: 0, cell: 'C2' }] }) },
-  { id: '6.4', ch: '6 Effetti', title: 'Fine turno', teach: 'Fine turno', type: 'puzzle', rules: {}, maxTurns: 2,
+  { id: '6.4', ch: '5 Effetti', title: 'Fine turno', teach: 'Fine turno', type: 'puzzle', rules: {}, maxTurns: 2,
     intro: 'Seme ha "Fine turno: +1 a tutti i lati di sé (max +2)". L\'effetto scatta alla fine di ogni tuo turno, finché la carta è sul tabellone.',
     goal: 'Fai crescere Seme due volte.', objective: [{ t: 'fx', cause: 'grow', n: 2, label: 'Seme cresce 2 volte' }],
     build: () => ({ board: [['D4', 'c', syn('Nemica', 3, 3, 3, 3)]], hand: [cByName('Demetra'), syn('Recluta', 4, 4, 4, 4)], deck: [syn('Recluta 2', 4, 4, 4, 4)] }) },
@@ -718,37 +709,38 @@ const MISSIONS = [
     intro: 'Per 5 round vedi una coppia di carte: ne scegli una e l\'altra va alla CPU. In contemporanea la CPU fa lo stesso con la sua coppia e il suo scarto va a te. Non vedi le sue scelte. Alla fine hai 5 carte scelte e 5 scarti della CPU: un mazzo da 10.',
     goal: 'Completa il draft e vinci la partita.', objective: [] },
   { id: '8.1', ch: '8 Esame', title: 'Prova finale', teach: 'Tutte le regole', type: 'full', rules: { same: true, plus: true, combo: true, elemental: true }, lvl: 'media', src: 'deck',
-    intro: 'Partita completa con tutte le regole: Same, Plus, Combo, Elementi ed effetti delle carte. Superandola completi la campagna.',
+    intro: 'Partita completa con tutte le regole: Plus, Combo, Elementi, effetti e Same, la regola avanzata. Superandola completi la campagna.',
     goal: 'Vinci con almeno 1 cattura Same, Plus o Combo.', objective: [{ t: 'capAny', causes: ['same', 'plus', 'combo'], n: 1, label: 'cattura Same/Plus/Combo ≥ 1' }] },
 ];
 // Missioni aggiunte nel v10 (completano le 21 del file Notion). Vengono inserite in ordine di id.
 [
-  { id: '2.2', ch: '2 Same', title: 'Doppio Same', teach: 'Same con più carte', type: 'puzzle', rules: { same: true }, maxTurns: 1,
+  { id: '2.2', ch: '6 Same', title: 'Doppio Same', teach: 'Same con più carte', type: 'puzzle', rules: { same: true }, maxTurns: 1,
     intro: 'Same cattura solo i vicini il cui lato opposto è uguale al tuo: qui due vicini sono uguali (7 e 4), il terzo no. Quest\'ultimo viene catturato dal confronto base, non da Same.',
     goal: 'Cattura almeno 2 carte con Same in una sola mossa.', objective: [{ t: 'cap', cause: 'same', n: 2, perMove: true, label: '2 catture Same in una mossa' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 7, 3)], ['A2', 'c', syn('Nemica O', 3, 4, 3, 3)], ['C2', 'c', syn('Nemica E', 3, 3, 3, 3)]], hand: [syn('Gemella', 7, 5, 2, 4), syn('Robusta', 5, 5, 5, 5)] }) },
-  { id: '3.2', ch: '3 Plus', title: 'Same o Plus', teach: 'Distinguere Same da Plus', type: 'puzzle', rules: { same: true, plus: true }, maxTurns: 2,
-    intro: 'Hai due carte e due gruppi di nemiche. Same cerca valori uguali, Plus cerca somme uguali (lato tuo + lato opposto). Ogni carta funziona in un solo gruppo: ti servono entrambe.',
+  { id: '3.2', ch: '6 Same', title: 'Same o Plus', teach: 'Distinguere Same da Plus', type: 'puzzle', rules: { same: true, plus: true }, maxTurns: 2,
+    intro: 'Plus lo conosci: cerca somme uguali. Same cerca valori uguali, non somme. Hai due gruppi di nemiche e due carte: ciascuna funziona in un solo gruppo. Ti servono entrambe.',
     goal: 'Usa Same e Plus nella stessa partita e vinci.', objective: [{ t: 'cap', cause: 'same', n: 1, label: 'cattura Same ≥ 1' }, { t: 'cap', cause: 'plus', n: 1, label: 'cattura Plus ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica N1', 3, 3, 7, 3)], ['A2', 'c', syn('Nemica O1', 3, 4, 3, 3)], ['D2', 'c', syn('Nemica N2', 3, 3, 6, 3)], ['C3', 'c', syn('Nemica O2', 3, 7, 3, 3)]], hand: [syn('Gemella', 7, 2, 2, 4), syn('Somma', 3, 2, 2, 2)] }) },
-  { id: '4.2', ch: '4 Combo', title: 'Catena lunga', teach: 'Combo da Plus', type: 'puzzle', rules: { plus: true, combo: true }, maxTurns: 1,
+  { id: '4.2', ch: '3 Combo', title: 'Catena lunga', teach: 'Combo da Plus', type: 'puzzle', rules: { plus: true, combo: true }, maxTurns: 1,
     intro: 'Plus cattura due carte (somme uguali a 9). Una di esse, ora tua, attacca a sua volta la vicina con il confronto base: è la Combo.',
     goal: 'Cattura 3 carte con una sola mossa (Plus + Combo).', objective: [{ t: 'capAny', causes: ['plus', 'combo'], n: 3, label: '3 catture Plus/Combo' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 6, 3)], ['A2', 'c', syn('Nemica O', 3, 7, 3, 3)], ['A3', 'c', syn('Nemica lontana', 1, 3, 3, 3)]], hand: [syn('Somma', 3, 2, 2, 2), syn('Robusta', 5, 5, 5, 5)] }) },
-  { id: '4.3', ch: '4 Combo', title: 'Serve Same o Plus', teach: 'Combo dipende da Same o Plus', type: 'puzzle', rules: { same: true, combo: true }, maxTurns: 1,
-    intro: 'La Combo parte solo da una cattura Same o Plus: le catture di base non innescano catene. Senza Same e Plus la Combo si spegne anche nelle opzioni di gioco. La carta più forte qui cattura di più, ma non fa Combo.',
+  { id: '4.3', ch: '3 Combo', title: 'Serve Plus', teach: 'Combo dipende da Plus', type: 'puzzle', rules: { plus: true, combo: true }, maxTurns: 1,
+    intro: 'La Combo parte solo da una cattura Plus: le catture di base non innescano catene. Senza Plus la Combo si spegne anche nelle opzioni. La carta più forte qui cattura di più, ma non fa Combo.',
     goal: 'Fai una Combo.', objective: [{ t: 'cap', cause: 'combo', n: 1, label: 'cattura Combo ≥ 1' }],
-    build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 7, 3)], ['A2', 'c', syn('Nemica O', 3, 4, 3, 3)], ['A3', 'c', syn('Nemica lontana', 2, 3, 3, 3)]], hand: [syn('Gemella', 7, 2, 2, 4), syn('Forte', 8, 8, 8, 8)] }) },
-  { id: '5.2', ch: '5 Elementi', title: 'Cella sbagliata', teach: 'Elementi: −1 e carte Neutre', type: 'puzzle', rules: { elemental: true }, maxTurns: 1,
+    build: () => ({ board: [['B1', 'c', syn('Nemica N', 3, 3, 5, 3)], ['A2', 'c', syn('Nemica O', 3, 6, 5, 3)], ['A3', 'c', syn('Nemica lontana', 2, 3, 3, 3)]], hand: [syn('Somma', 4, 2, 2, 3), syn('Forte', 8, 8, 8, 8)] }) },
+  { id: '5.2', ch: '4 Elementi', title: 'Cella sbagliata', teach: 'Elementi: −1 e carte Neutre', type: 'puzzle', rules: { elemental: true }, maxTurns: 1,
     intro: 'Una carta di elemento diverso dalla cella (o Neutra) ha −1 su tutti i lati. Le carte più forti non bastano: conta l\'elemento giusto sulla cella giusta.',
     goal: 'Cattura 1 carta scegliendo carta e cella corrette.', objective: [{ t: 'cap', cause: 'base', n: 1, label: 'cattura base ≥ 1' }],
     build: () => ({ board: [['B1', 'c', syn('Nemica', 3, 3, 6, 3)]], elem: { B2: 'fire', D4: 'water' }, hand: [syn('Neutra', 7, 2, 2, 2), syn('Onda', 7, 2, 2, 2, 'water'), syn('Brace', 6, 2, 2, 2, 'fire')] }) },
-  { id: '6.5', ch: '6 Effetti', title: 'Inizio turno', teach: 'Inizio turno, Fino a fine turno', type: 'puzzle', rules: {}, maxTurns: 3,
+  { id: '6.5', ch: '5 Effetti', title: 'Inizio turno', teach: 'Inizio turno, Fino a fine turno', type: 'puzzle', rules: {}, maxTurns: 3,
     intro: 'Pioggia ha "Inizio turno: alleate Acqua adiacenti +1 a tutti i lati fino a fine turno". L\'effetto scatta all\'inizio del tuo turno, solo per le carte già sul tabellone. Gioca Pioggia e una carta Acqua vicine, poi aspetta il turno dopo.',
     goal: 'Fai scattare l\'effetto di Pioggia e vinci.', objective: [{ t: 'start', n: 1, label: 'effetto Inizio turno attivato' }],
     build: () => ({ board: [['D4', 'c', syn('Nemica', 3, 3, 3, 3)]], hand: [cByName('Tlaloc'), cByName('Sobek')], deck: [syn('Recluta', 4, 4, 4, 4)] }) },
 ].forEach(m => MISSIONS.push(m));
-MISSIONS.sort((a, b) => { const k = id => id.split('.').map(Number); const x = k(a.id), y = k(b.id); return x[0] - y[0] || x[1] - y[1]; });
+const CAMPAIGN_ORDER = ['1.1', '1.2', '1.3', '1.4', '3.1', '4.2', '4.3', '5.1', '5.2', '6.1', '6.2', '6.3', '6.4', '6.5', '2.1', '2.2', '3.2', '4.1', '7.1', '7.2', '8.1'];
+MISSIONS.sort((a, b) => CAMPAIGN_ORDER.indexOf(a.id) - CAMPAIGN_ORDER.indexOf(b.id));
 const FINAL_MISSION = 'm8.1';
 function newMissionGame(m) {
   const b = m.build(), rules = Object.assign({}, RULES0, m.rules);
@@ -793,13 +785,8 @@ const TOGGLES = [
   { k: 'elemental', t: 'Elementi', d: '4 celle elementali: stesso elemento +1, elemento diverso −1 su tutti i lati.' },
   { k: 'effects', t: 'Effetti', d: 'Le carte applicano Corazza, Aura, pesca e gli altri effetti scritti.' },
 ];
-const EQ_VALUES = [['off', 'Spento'], ['vuota', 'Cella vuota'], ['bloccata', 'Cella bloccata']];
-const EQ_HELP = {
-  off: 'Spento: entrambi piazzano 8 carte. Chi muove per secondo fa l\'ultima mossa.',
-  vuota: 'Cella vuota: chi muove per secondo piazza 7 carte. Resta una cella libera.',
-  bloccata: 'Cella bloccata: una cella a caso è bloccata dall\'inizio. Si gioca sulle altre 15.',
-};
-const CHAPTER_RULE = { '2 Same': 'same', '3 Plus': 'plus', '4 Combo': 'combo', '6 Effetti': 'effects' };
+const CHAPTER_RULE = { '2 Plus': 'plus', '3 Combo': 'combo', '5 Effetti': 'effects', '6 Same': 'same' };
+const CHAPTER_RENAME = { '3 Plus': '2 Plus', '4 Combo': '3 Combo', '5 Elementi': '4 Elementi', '6 Effetti': '5 Effetti', '2 Same': '6 Same' };
 const CAUSE_LABEL = { base: 'CATTURA', same: 'SAME', plus: 'PLUS', combo: 'COMBO', blocked: 'CORAZZA', draw: 'PESCA +1', buff: 'BUFF', debuff: 'DEBUFF', grow: 'CRESCE', swap: 'INVERTE' };
 const REDUCE_MOTION = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 const T = REDUCE_MOTION ? { first: 200, depth: 250, step: 80, tail: 250, cpu: 400 } : { first: 550, depth: 600, step: 140, tail: 500, cpu: 900 };
@@ -814,11 +801,9 @@ function storageEmpty() {
   catch (e) { return false; }
 }
 const FIRST_LAUNCH = storageEmpty();
-const normEq = v => (v === 'off' || v === 'vuota' || v === 'bloccata') ? v : 'vuota';
 const ST = {
   decks: store.get('decks', null), deckIdx: store.get('deckIdx', 0), cpu: store.get('cpu', 'media'),
   rules: Object.assign(FIRST_LAUNCH ? { same: false, plus: false, combo: false, elemental: false, effects: false } : { same: true, plus: true, combo: true, elemental: false, effects: true }, store.get('rules', {})),
-  equilibrio: normEq(store.get('equilibrio', 'vuota')),
   owned: store.get('owned', null), prog: store.get('prog', { pts: 0, games: 0, wins: 0 }), session: store.get('session', []), tutSeen: store.get('tutSeen', false), camp: store.get('camp', { done: {}, complete: false, rewarded: {} }),
 };
 ST.camp.rewarded = ST.camp.rewarded || {};
@@ -847,7 +832,7 @@ const saveProg = () => store.set('prog', ST.prog);
 if (location.hash === '#debug') { ST.owned = ACTIVE().map(c => c.id); }
 initOwned();
 const ownDraft = () => shuffle(OWN().filter(c => c.rarity !== 'legendary' && c.rarity !== 'epic'), Math.random).slice(0, DECK_SIZE);
-const saveST = () => { store.set('decks', ST.decks); store.set('deckIdx', ST.deckIdx); store.set('cpu', ST.cpu); store.set('rules', ST.rules); store.set('equilibrio', ST.equilibrio); };
+const saveST = () => { store.set('decks', ST.decks); store.set('deckIdx', ST.deckIdx); store.set('cpu', ST.cpu); store.set('rules', ST.rules); };
 if (FIRST_LAUNCH) saveST();
 const fullRules = () => ({ same: ST.rules.same, plus: ST.rules.plus, combo: ST.rules.combo && (ST.rules.same || ST.rules.plus), comboBase: false, maxDepth: 99, diagonals: false, spDiagonals: false, elemental: ST.rules.elemental, effects: ST.rules.effects !== false });
 
@@ -962,29 +947,16 @@ function renderPlay() {
     const off = t.dep ? !t.dep(ST.rules) : false, on = !!ST.rules[t.k] && !off;
     return `<div class="tg ${on ? 'on' : ''} ${off ? 'off' : ''}" data-tg="${t.k}" role="switch" aria-checked="${on}" tabindex="0"><div class="t"><b>${t.t}</b><small>${t.d}${off ? ' (richiede Same o Plus)' : ''}</small></div><div class="knob"></div></div>`;
   }).join('');
-  $('#seg-eq').innerHTML = EQ_VALUES.map(([k, l]) => `<button type="button" role="radio" data-eq="${k}" class="${ST.equilibrio === k ? 'on' : ''}" aria-checked="${ST.equilibrio === k}" tabindex="0">${l}</button>`).join('');
-  $('#eq-note').textContent = EQ_HELP[ST.equilibrio] || EQ_HELP.vuota;
-  const fxLine = ST.rules.effects === false ? 'Gli effetti delle carte sono disattivati: si sbloccano nel capitolo 6, oppure attivali qui.' : 'Gli effetti delle carte sono attivi.';
+  const fxLine = ST.rules.effects === false ? 'Gli effetti delle carte sono disattivati: si sbloccano nel capitolo Effetti, oppure attivali qui.' : 'Gli effetti delle carte sono attivi.';
   $('#poolinfo').textContent = `${fxLine} ${(CURRENT_RAW === RAW_POOL ? 'Pool predefinito' : 'Pool personalizzato')} · ${ACTIVE().length} carte attive (le altre sono nascoste). Il Draft usa tutte le carte attive, il mazzo solo quelle che possiedi. I numeri sui lati sono decimali. Passaggi illimitati: ogni passaggio consuma il turno.`;
 }
 function toggleRule(k) { const t = TOGGLES.find(x => x.k === k); if (!t || (t.dep && !t.dep(ST.rules))) return; ST.rules[k] = !ST.rules[k]; if (!ST.rules.same && !ST.rules.plus) ST.rules.combo = false; saveST(); renderPlay(); }
-function setEquilibrio(v) { const n = normEq(v); if (!EQ_VALUES.some(([k]) => k === v) || n === ST.equilibrio) return; ST.equilibrio = n; saveST(); renderPlay(); }
 $('#s-play').addEventListener('click', e => {
   const lv = e.target.closest('[data-lv]'); if (lv) { ST.cpu = lv.dataset.lv; saveST(); renderPlay(); return; }
-  const eq = e.target.closest('[data-eq]'); if (eq) { setEquilibrio(eq.dataset.eq); return; }
   const tg = e.target.closest('[data-tg]'); if (tg) toggleRule(tg.dataset.tg);
 });
 $('#s-play').addEventListener('keydown', e => {
-  const tg = e.target.closest('[data-tg]'); if (tg && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); toggleRule(tg.dataset.tg); return; }
-  const eq = e.target.closest('[data-eq]'); if (!eq) return;
-  const order = EQ_VALUES.map(([k]) => k), i = order.indexOf(ST.equilibrio);
-  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setEquilibrio(eq.dataset.eq); }
-  else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-    e.preventDefault();
-    const n = order[(i + (e.key === 'ArrowRight' ? 1 : order.length - 1)) % order.length];
-    setEquilibrio(n);
-    const btn = $('#seg-eq').querySelector(`[data-eq="${n}"]`); if (btn) btn.focus();
-  }
+  const tg = e.target.closest('[data-tg]'); if (tg && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); toggleRule(tg.dataset.tg); }
 });
 $('#deck-change').onclick = () => {
   $('#decklist').innerHTML = ST.decks.map((d, i) => { const ck = deckCheck(deckCards(d)); return `<button data-di="${i}" class="${i === ST.deckIdx ? 'primary' : ''}">${esc(d.name)} · ${d.ids.length}/${DECK_SIZE} ${ck.ok ? '' : '(incompleto)'}</button>`; }).join('');
@@ -1075,7 +1047,7 @@ function onDrop(d, t) {
   else if ((d.kind === 'hand' || d.kind === 'prov') && screen === 'game') {
     if (!canAct()) return;
     const cell = t.closest('[data-cell]');
-    if (cell && !G.board.cells[+cell.dataset.cell] && G.board.blocked !== +cell.dataset.cell) setProv(d.kind === 'hand' ? +d.key : view.prov.hi, +cell.dataset.cell);
+    if (cell && !G.board.cells[+cell.dataset.cell]) setProv(d.kind === 'hand' ? +d.key : view.prov.hi, +cell.dataset.cell);
     else if (d.kind === 'prov' && t.closest('[data-drop="hand"]')) { view.prov = null; renderAll(); }
   }
 }
@@ -1175,22 +1147,9 @@ function quietDeck(deck, rules) {
 }
 function newGameWith(rules, dp, dc, first) {
   const a = shuffle(quietDeck(dp, rules), Math.random), b = shuffle(quietDeck(dc, rules), Math.random), f = first || (Math.random() < 0.5 ? 'p' : 'c');
-  const g = { rules: Object.assign({}, rules), first: f, current: f, board: newBoard(rules, Math.random), decks: { p: a.slice(), c: b.slice() }, hands: { p: [], c: [] }, deckIds: { p: a.map(c => c.id), c: b.map(c => c.id) }, power: { p: deckPower(a), c: deckPower(b) }, turnsUsed: { p: 0, c: 0 }, turnNo: 0, moves: [], startedAt: Date.now(), eq: 'off' };
+  const g = { rules: Object.assign({}, rules), first: f, current: f, board: newBoard(rules, Math.random), decks: { p: a.slice(), c: b.slice() }, hands: { p: [], c: [] }, deckIds: { p: a.map(c => c.id), c: b.map(c => c.id) }, power: { p: deckPower(a), c: deckPower(b) }, turnsUsed: { p: 0, c: 0 }, turnNo: 0, moves: [], startedAt: Date.now() };
   for (const w of ['p', 'c']) for (let i = 0; i < HAND_START; i++) { const c = g.decks[w].shift(); if (c) g.hands[w].push(c); }
   return g;
-}
-function applyEquilibrio(g) {
-  g.eq = 'off';
-  if (g.mission || g.mode === 'onboard' || g.mode === 'camp') return;
-  const eq = normEq(ST.equilibrio);
-  g.eq = eq;
-  if (eq === 'vuota') { g.turnCap = { p: MAX_TURNS, c: MAX_TURNS }; g.turnCap[other(g.first)] = MAX_TURNS - 1; }
-  else if (eq === 'bloccata') {
-    const open = [];
-    for (let i = 0; i < CELLS; i++) if (!g.board.cells[i]) open.push(i);
-    g.board.blocked = open[Math.floor(Math.random() * open.length)];
-    if (g.board.elem[g.board.blocked]) g.board.elem[g.board.blocked] = null;
-  }
 }
 function beginGame(mode, deckP, deckC, opts) {
   opts = opts || {}; lastMode = mode; lastOpts = opts; tut.on = mode === 'tutorial'; tut.step = 0; tut.explained = {};
@@ -1198,7 +1157,6 @@ function beginGame(mode, deckP, deckC, opts) {
   if (opts.mission) r.effects = opts.rules && opts.rules.effects === false ? false : true;
   lvl = opts.lvl || (tut.on ? 'facile' : ST.cpu);
   G = newGameWith(r, deckP, deckC, tut.on ? 'p' : null); G.mode = mode; G.lvl = lvl; G.mission = opts.mission || null; prevHandN = 0; handKey = '';
-  applyEquilibrio(G);
   Object.assign(view, { owners: Array(CELLS).fill(null), lock: false, prov: null, passConfirm: false, flash: null, pop: null, marks: {}, placed: null });
   show('game'); $('#strip').textContent = ''; $('#rib').hidden = true; toast(G.first === 'p' ? 'Inizi tu' : 'Inizia la CPU', 1400);
   if (G.mission) missionIntro(G.mission); else if (tut.on) tutStep(1); else $('#coach').hidden = true;
@@ -1223,7 +1181,7 @@ function startTurn() {
 }
 function cpuMove() {
   if (!G) return;
-  if (G.script && G.script.length) { const sc = G.script.shift(); if (sc === 'pass') { applyPass(G, 'c'); return startTurn(); } if (sc && G.hands.c[sc.hi] && !G.board.cells[IDX(sc.cell)] && G.board.blocked !== IDX(sc.cell)) { const res0 = applyPlace(G, 'c', sc.hi, IDX(sc.cell)); return animate(res0, startTurn); } }
+  if (G.script && G.script.length) { const sc = G.script.shift(); if (sc === 'pass') { applyPass(G, 'c'); return startTurn(); } if (sc && G.hands.c[sc.hi] && !G.board.cells[IDX(sc.cell)]) { const res0 = applyPlace(G, 'c', sc.hi, IDX(sc.cell)); return animate(res0, startTurn); } }
   const mv = cpuChoose(G, G.lvl === 'alta' ? 'difficile' : G.lvl);
   if (!mv) { applyPass(G, 'c'); return startTurn(); }
   const res = applyPlace(G, 'c', mv.hi, mv.cell);
@@ -1231,7 +1189,7 @@ function cpuMove() {
   animate(res, startTurn);
 }
 function setProv(hi, cell) {
-  if (G.board.blocked === cell || G.board.cells[cell]) return;
+  if (G.board.cells[cell]) return;
   view.prov = { hi, cell }; view.moves++;
   const card = G.hands.p[hi], all = resolve(cloneBoard(G.board), cell, card, 'p', G.rules), ev = all.filter(e => e.from !== e.to);
   view.provN = ev.length; view.passConfirm = false;
@@ -1247,7 +1205,7 @@ function renderHeader() {
   const c = counts(), sc = $('#g-score'), st = `${c.p} – ${c.c}`;
   if (sc.textContent !== st) { sc.textContent = st; sc.classList.remove('bump'); void sc.offsetWidth; sc.classList.add('bump'); }
   const cr = document.querySelectorAll('#s-game .ghdr .circ'); if (cr.length > 1) { const live = !isOver(G); cr[0].classList.toggle('act', live && G.current === 'p'); cr[1].classList.toggle('act', live && G.current === 'c'); }
-  const cap = capFor(G, G.current), n = Math.min(cap, G.turnsUsed[G.current] + (isOver(G) ? 0 : 1));
+  const cap = maxT(G), n = Math.min(cap, G.turnsUsed[G.current] + (isOver(G) ? 0 : 1));
   $('#g-sub').textContent = view.prov && view.pvScore ? `Anteprima: ${view.pvScore.p} – ${view.pvScore.c}` : isOver(G) ? 'Fine' : `Turno ${n}/${cap} · ${G.current === 'p' ? 'tocca a te' : 'CPU'} · mazzo ${G.decks.p.length}`;
 }
 let boardKeys = [];
@@ -1256,10 +1214,9 @@ function renderBoard() {
   if (root.children.length !== CELLS) { root.innerHTML = Array.from({ length: CELLS }, () => '<div class="cell"></div>').join(''); boardKeys = []; }
   for (let i = 0; i < CELLS; i++) {
     const c = G.board.cells[i], el = G.board.elem[i], isProv = view.prov && view.prov.cell === i;
-    const blocked = G.board.blocked === i, sug = !!(G.onboard && G.suggest === i && !c && !blocked);
-    let h = `<div class="cell ${el && !blocked ? 'cell-' + el : ''} ${blocked ? 'blocked' : ''} ${sug ? 'sug' : ''} ${canAct() && !c && !isProv && !blocked ? 'ok' : ''}" data-cell="${i}" ${c ? `data-dg="cell:${i}"` : ''} ${sug ? `tabindex="0" role="button" aria-label="Cella suggerita ${cellLabel(i)}. Invio per piazzare la prima carta"` : blocked ? `role="img" aria-label="Cella ${cellLabel(i)} bloccata"` : ''}><span class="lbl">${cellLabel(i)}</span>`;
-    if (blocked) h += '<span class="wm">Bloccata</span>';
-    else if (c) { const pv = view.prov && view.pv ? view.pv[i] : null, o = (pv && pv.to) || view.owners[i] || c.owner; h += cardHTML(c.card, { owner: o, eff: d => effVal(G.board, i, d, G.rules), cls: (view.flash === i ? 'flipA' : view.pop === i ? 'pop' : '') + (view.placed === i ? ' placed' : '') + (pv ? ' pvc' : ''), shield: !!c.shield, mark: view.marks[i] || (pv && pv.label) }); }
+    const sug = !!(G.onboard && G.suggest === i && !c);
+    let h = `<div class="cell ${el ? 'cell-' + el : ''} ${sug ? 'sug' : ''} ${canAct() && !c && !isProv ? 'ok' : ''}" data-cell="${i}" ${c ? `data-dg="cell:${i}"` : ''} ${sug ? `tabindex="0" role="button" aria-label="Cella suggerita ${cellLabel(i)}. Invio per piazzare la prima carta"` : ''}><span class="lbl">${cellLabel(i)}</span>`;
+    if (c) { const pv = view.prov && view.pv ? view.pv[i] : null, o = (pv && pv.to) || view.owners[i] || c.owner; h += cardHTML(c.card, { owner: o, eff: d => effVal(G.board, i, d, G.rules), cls: (view.flash === i ? 'flipA' : view.pop === i ? 'pop' : '') + (view.placed === i ? ' placed' : '') + (pv ? ' pvc' : ''), shield: !!c.shield, mark: view.marks[i] || (pv && pv.label) }); }
     else if (isProv) { const card = G.hands.p[view.prov.hi]; h += `<div class="provw" data-dg="prov:${i}">${cardHTML(card, { owner: 'p', eff: d => previewVal(G.board, i, card, 'p', d, G.rules), cls: 'prov' })}</div><span class="badge">+${view.provN}</span>`; }
     else if (el) h += `<span class="wm">${EL_NAME[el]}</span>`;
     h += '</div>';
@@ -1350,7 +1307,7 @@ function animate(res, cb) {
 const TUT = {
   1: 'Griglia 4×4. Ogni carta ha quattro numeri, uno per lato. <b>Trascina una carta dalla mano su una cella.</b> Il piazzamento è provvisorio.',
   2: 'Il badge <b>+N</b> dice quante carte catturi se confermi. Catturi un vicino nemico se il tuo valore sul lato di contatto è maggiore del suo. <b>Concludi</b> per confermare, oppure sposta la carta o riportala in mano.',
-  3: 'Ogni turno peschi 1 carta e ne piazzi 1. I turni seguono Equilibrio turni; ogni passaggio (Salta) ne consuma uno. Same, Plus e Combo vengono spiegati quando capitano. Tocca qualunque carta per leggerne l\'effetto.',
+  3: 'Ogni turno peschi 1 carta e ne piazzi 1. 8 turni a testa, 16 celle; ogni passaggio (Salta) consuma un turno. Plus, Combo e Same vengono spiegati quando capitano. Tocca qualunque carta per leggerne l\'effetto.',
 };
 function tutStep(n) { tut.step = n; $('#coach-skip').hidden = false; $('#coach-skip').textContent = 'Chiudi tutorial'; $('#coach').hidden = false; $('#coach-text').innerHTML = TUT[n]; $('#coach-next').hidden = n < 3; fit(); }
 function tutExplain(e, res) {
@@ -1373,8 +1330,8 @@ $('#coach-skip').onclick = () => {
 // ---------- REGOLE / QUIT ----------
 $('#help').onclick = () => {
   const r = G.rules, on = TOGGLES.filter(t => t.k !== 'effects' && r[t.k] && !(t.dep && !t.dep(r)));
-  const eqLine = (G.onboard || G.mission) ? `Massimo ${capFor(G, 'p')} turni in questa partita.` : G.eq === 'vuota' ? EQ_HELP.vuota : G.eq === 'bloccata' ? EQ_HELP.bloccata : '8 piazzamenti a testa.';
-  $('#rules-body').innerHTML = `<p><b>Base.</b> Piazzi una carta: per ogni carta nemica adiacente, se il tuo valore sul lato è maggiore del suo valore sul lato opposto, la catturi.</p>${on.map(t => `<p><b>${t.t}.</b> ${t.d}</p>`).join('')}${G.mission ? '<p><b>Obiettivo.</b> ' + esc(G.mission.goal) + '</p>' : ''}<p><b>Effetti.</b> ${G.rules.effects === false ? 'Disattivati in questa partita. Il testo sulla carta resta leggibile.' : 'Attivi. Tocca una carta per leggere il suo.'}</p><p><b>Turni.</b> 3 carte iniziali, 1 pescata a inizio turno, 1 piazzamento (provvisorio finché non premi Concludi), passaggi illimitati (ogni passaggio consuma il turno). ${eqLine} La partita finisce anche se non restano celle libere. Vince chi ha più carte sul tabellone. I numeri sui lati sono decimali.</p><p><b>Indicatori.</b> ▲/▼ = valore in verde/rosso: modificato da elemento o aura. Anello azzurro = Corazza attiva. Etichetta TU/CPU = proprietario.</p>`;
+  const turnLine = (G.onboard || G.mission) ? `Massimo ${maxT(G)} turni in questa partita.` : '8 piazzamenti a testa, 16 celle.';
+  $('#rules-body').innerHTML = `<p><b>Base.</b> Piazzi una carta: per ogni carta nemica adiacente, se il tuo valore sul lato è maggiore del suo valore sul lato opposto, la catturi.</p>${on.map(t => `<p><b>${t.t}.</b> ${t.d}</p>`).join('')}${G.mission ? '<p><b>Obiettivo.</b> ' + esc(G.mission.goal) + '</p>' : ''}<p><b>Effetti.</b> ${G.rules.effects === false ? 'Disattivati in questa partita. Il testo sulla carta resta leggibile.' : 'Attivi. Tocca una carta per leggere il suo.'}</p><p><b>Turni.</b> 3 carte iniziali, 1 pescata a inizio turno, 1 piazzamento (provvisorio finché non premi Concludi), passaggi illimitati (ogni passaggio consuma il turno). ${turnLine} La partita finisce anche a tabellone pieno. Vince chi ha più carte sul tabellone. I numeri sui lati sono decimali.</p><p><b>Indicatori.</b> ▲/▼ = valore in verde/rosso: modificato da elemento o aura. Anello azzurro = Corazza attiva. Etichetta TU/CPU = proprietario.</p>`;
   $('#rules').hidden = false;
 };
 $('#rules-close').onclick = () => { $('#rules').hidden = true; };
@@ -1409,7 +1366,7 @@ function endGame() {
   if (G.ended) return; G.ended = true;
   tut.on = false; ST.tutSeen = true; store.set('tutSeen', true); $('#coach').hidden = true;
   const p = score(G, 'p'), c = score(G, 'c'), mode = G.mode;
-  const rec = { v: 9, ts: new Date().toISOString(), mode, cpu: G.lvl, rules: { same: G.rules.same, plus: G.rules.plus, combo: G.rules.combo, elemental: G.rules.elemental, effects: G.rules.effects !== false }, equilibrio: G.eq || 'off', first: G.first, result: { p, c }, firstCapMs: G.firstCapMs == null ? null : G.firstCapMs, deckPower: G.power, decks: G.deckIds, elementCells: G.board.elem.map((e, i) => e ? cellLabel(i) + ':' + e : null).filter(Boolean), moves: G.moves, stats: gameStats(G) };
+  const rec = { v: 9, ts: new Date().toISOString(), mode, cpu: G.lvl, rules: { same: G.rules.same, plus: G.rules.plus, combo: G.rules.combo, elemental: G.rules.elemental, effects: G.rules.effects !== false }, first: G.first, result: { p, c }, firstCapMs: G.firstCapMs == null ? null : G.firstCapMs, deckPower: G.power, decks: G.deckIds, elementCells: G.board.elem.map((e, i) => e ? cellLabel(i) + ':' + e : null).filter(Boolean), moves: G.moves, stats: gameStats(G) };
   lastRecord = rec; if (mode !== 'tutorial' && mode !== 'onboard' && !G.mission) { ST.session.push(rec); store.set('session', ST.session); }
   if (mode === 'onboard') store.set('onboard', 'done');
   $('#rib').hidden = true; document.body.classList.remove('hit');
@@ -1423,8 +1380,7 @@ function endGame() {
   let mres = null; if (G.mission) { const ev = evalObjective(G, G.mission.objective || []), win = p > c; mres = { ev, win, ok: win && ev.every(x => x.ok) }; if (mres.ok) { const got = completeMission(G.mission.id); gain.push(...got.cards); mres.full = got.full; } }
   const r = mres ? (mres.ok ? ['MISSIONE SUPERATA', 'w'] : mres.win ? ['VITTORIA NON VALIDA', 'd'] : p < c ? ['SCONFITTA', 'l'] : ['PAREGGIO', 'd']) : p > c ? ['VITTORIA', 'w'] : p < c ? ['SCONFITTA', 'l'] : ['PAREGGIO', 'd'];
   $('#e-score').textContent = `${p} – ${c}`; $('#res').textContent = r[0]; $('#res').className = 'res ' + r[1];
-  const eqBit = G.eq === 'vuota' ? ' · cella vuota' : G.eq === 'bloccata' ? ' · cella bloccata' : G.eq === 'off' && mode !== 'onboard' && !G.mission ? ' · equilibrio spento' : '';
-  $('#resdet').textContent = G.onboard ? 'Introduzione · solo cattura base. Same, Plus, Combo ed effetti si sbloccano nei capitoli della Campagna, e puoi attivarli da Gioca.' : mres ? `Missione ${G.mission.id} · ${G.mission.title} · ` + mres.ev.map(x => (x.ok ? '✓ ' : '✗ ') + x.label).join(' · ') : `${mode === 'draft' ? 'Draft' : mode === 'tutorial' ? 'Tutorial' : 'Mazzo'} · CPU ${G.lvl} · primo a muovere: ${G.first === 'p' ? 'tu' : 'CPU'} · potenza mazzi ${G.power.p} / ${G.power.c}${eqBit}`;
+  $('#resdet').textContent = G.onboard ? 'Introduzione · solo cattura base. Plus e Combo si sbloccano nei primi capitoli; Same arriva dopo, come regola avanzata. Gli effetti nel capitolo Effetti. Puoi attivarli tutti da Gioca.' : mres ? `Missione ${G.mission.id} · ${G.mission.title} · ` + mres.ev.map(x => (x.ok ? '✓ ' : '✗ ') + x.label).join(' · ') : `${mode === 'draft' ? 'Draft' : mode === 'tutorial' ? 'Tutorial' : 'Mazzo'} · CPU ${G.lvl} · primo a muovere: ${G.first === 'p' ? 'tu' : 'CPU'} · potenza mazzi ${G.power.p} / ${G.power.c}`;
   const s = rec.stats;
   const capTxt = s.firstCapMs == null ? '–' : (s.firstCapMs / 1000).toFixed(1) + ' s';
   $('#gstats').innerHTML = `<tr><th>Catture</th><th>Base</th><th>Same</th><th>Plus</th><th>Combo</th></tr><tr><td></td><td>${s.base}</td><td>${s.same}</td><td>${s.plus}</td><td>${s.combo}</td></tr><tr><td>Corazza / profondità max</td><td colspan="4">${s.blocked} / ${s.maxDepth}</td></tr><tr><td>Tempo medio di decisione</td><td colspan="4">${s.tAvg == null ? '–' : (s.tAvg / 1000).toFixed(1) + 's'}</td></tr><tr><td>Tempo alla prima cattura</td><td colspan="4">${capTxt}</td></tr>`;
@@ -1587,7 +1543,12 @@ $('#c-claude').onclick = async () => {
 };
 
 // ---------- CAMPAGNA (UI) ----------
-function catchUpRewards() { [...new Set(MISSIONS.map(m => m.ch))].forEach(ch => { if (!ST.camp.rewarded[ch] && MISSIONS.filter(m => m.ch === ch).every(m => ST.camp.done[m.id])) { const c = unlockCard(); ST.camp.rewarded[ch] = c ? true : 'full'; } }); store.set('camp', ST.camp); }
+function catchUpRewards() {
+  const rw = ST.camp.rewarded;
+  Object.keys(CHAPTER_RENAME).forEach(old => { if (rw[old] && !rw[CHAPTER_RENAME[old]]) rw[CHAPTER_RENAME[old]] = rw[old]; });
+  [...new Set(MISSIONS.map(m => m.ch))].forEach(ch => { if (!rw[ch] && MISSIONS.filter(m => m.ch === ch).every(m => ST.camp.done[m.id])) { const c = unlockCard(); rw[ch] = c ? true : 'full'; } });
+  store.set('camp', ST.camp);
+}
 function chReward(rw) {
   if (rw === true) return 'carta ottenuta ✓';
   if (rw === 'full' || !LOCKED().length) return 'collezione completa';
@@ -1664,7 +1625,7 @@ function placeSuggested() {
 function withIcon(card, icon) { card.icon = icon; return card; }
 function newOnboardingGame() {
   const rules = { same: false, plus: false, combo: false, comboBase: false, maxDepth: 99, diagonals: false, spDiagonals: false, elemental: false, effects: false };
-  const board = { cells: Array(CELLS).fill(null), elem: Array(CELLS).fill(null), blocked: null };
+  const board = { cells: Array(CELLS).fill(null), elem: Array(CELLS).fill(null) };
   board.cells[IDX('C2')] = mkInst(withIcon(syn('Sentinella', 2, 2, 2, 2), 'shield'), 'c');
   const hand = [withIcon(syn('Recluta', 6, 6, 4, 4), 'star'), withIcon(syn('Vedetta', 5, 6, 4, 4), 'wind'), withIcon(syn('Staffetta', 4, 6, 3, 4), 'feather')];
   const deck = [withIcon(syn('Rincalzo', 5, 5, 4, 4), 'dice'), withIcon(syn('Rincalzo', 4, 5, 4, 4), 'dice'), withIcon(syn('Rincalzo', 4, 4, 4, 4), 'key')];
